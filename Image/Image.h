@@ -29,6 +29,7 @@
 #define top2  10
 #define right2  10
 #define bottom2  10
+#define padding 10
 
 //compare options
 #define angleLimit  5

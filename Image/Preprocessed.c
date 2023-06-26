@@ -1,6 +1,7 @@
 
 #include "Image.h"
 #include "Memory.h"
+#include "newMath.h"
 const UINT8 height = MaxHeight;
 const UINT8 width = MaxWidth;
 
@@ -47,7 +48,7 @@ VOID SetImage(
                 }
             }
 
-            float direction = PI / 2 - 0.5 * atan2(2 * Axy, Ax - Ay);
+            float direction = PI / 2 - 0.5 * atan2_approximation2(2 * Axy, Ax - Ay);
             image->direct[x][y] = direction;
         }
     }
