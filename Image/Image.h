@@ -82,6 +82,7 @@ typedef struct
     float bord3;
     int status; // state of the triangle, 1 is confirmed match, 0 is not
     int id; // each set of 3 special points will have a characteristic ID based on the i j k indices of the for . loop
+    int numberOfTriangle;
 } GroupDataSpecialPoint;
 
 

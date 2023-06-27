@@ -477,6 +477,7 @@ UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTri
 	UINT8 CountSpecialPoint = ListSpecialPoint->Count;
 	int NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));
 	ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
+	ListTriangle->numberOfTriangle = NumElement;
 	UINT8 counter = 0;
 	float dx1;
     float dy1;

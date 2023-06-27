@@ -230,12 +230,132 @@ UINT8 CompairMinutiae(
 //---------------------------------------------------------------
 
 // -------------------------------------------------------
+unsigned long long factorial1(unsigned int num) {
+    if (num == 0)
+        return 1;
+    else
+        return num * factorial1(num - 1);
+}
 
 UINT8 CompairMinutiae_V3(
     GroupDataSpecialPoint *group1,
     GroupDataSpecialPoint *group2
 ){
+    int _distanceLimit = 2;
+    printf("So tam giac group1 la: %d\n", group1->numberOfTriangle);
+    printf("So tam giac group2 la: %d\n", group2->numberOfTriangle);
 
+    UINT8 counter = 0;
+    UINT8 result = 0;
+    for(int i = 0; i < group1->numberOfTriangle; i++ ){
+        for(int j = 0; j< group2->numberOfTriangle; j++){
+            counter+=1;
+            if(group2[j].status == 0){
+
+                if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+
+                else if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+                
+                else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+
+                else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+
+                else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+
+                else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
+                && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
+                ){
+                    mangIJK[result*3] = group1[i].id/100;
+                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+                    result+=1;
+                    group2[j].status = 1;
+                    break;
+                }
+
+
+            }
+        }
+    }
+
+    UINT8 sodiemtrung=0;
+
+    if(result>0){
+        sodiemtrung +=1;
+    }
+
+    UINT8 coincide = 0;
+    for(int i = 1; i < result*3; i++){
+        coincide = 0;
+        for(int j = i-1; j >= 0; j--){
+            if(mangIJK[i] == mangIJK[j]){
+                coincide = 1;
+            }
+            //printf("%d---------------%d\n",mangIJK[i],mangIJK[j]);
+        }
+        if(coincide == 0){
+            sodiemtrung +=1;
+        }
+    }
+    // for(int i = 0; i < result*3;i++){
+    //     printf("-----------%d\n",mangIJK[i]);
+    // }
+     printf("So tam giac trung nhau la: %d\n", result);
+     printf("So diem trung nhau theo phuong phap 2 la: %d\n", sodiemtrung);
+     free(group1);
+     free(group2);
+     return sodiemtrung;
 }
 UINT8 CompairMinutiae_V2(
     SpecialPoint *minus1,
@@ -246,9 +366,9 @@ UINT8 CompairMinutiae_V2(
     // printf("So diem dac biet 2 la: %d\n", minus2->Count);
     UINT32 sodiemdactrung1 = minus1->Count;
     UINT32 sodiemdactrung2 = minus2->Count;
-    int numElements1 = factorial(sodiemdactrung1) / (factorial(3) * factorial(sodiemdactrung1 - 3));
+    int numElements1 = factorial1(sodiemdactrung1) / (factorial1(3) * factorial1(sodiemdactrung1 - 3));
     // tính số nhóm 3 điểm
-    int numElements2 = factorial(sodiemdactrung2) / (factorial(3) * factorial(sodiemdactrung2 - 3));
+    int numElements2 = factorial1(sodiemdactrung2) / (factorial1(3) * factorial1(sodiemdactrung2 - 3));
 
     GroupDataSpecialPoint* group1 = (GroupDataSpecialPoint*)malloc(numElements1 * sizeof(GroupDataSpecialPoint));
     GroupDataSpecialPoint* group2 = (GroupDataSpecialPoint*)malloc(numElements2 * sizeof(GroupDataSpecialPoint)) ;
