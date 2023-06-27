@@ -131,9 +131,9 @@ UINT8 CompairMinutiae_V2(
 
 VOID RidgeThin(Image *image);
 
-UINT8 CompairMinutiae_V2(
-    SpecialPoint *minus1,
-    SpecialPoint *minus2
+UINT8 CompairMinutiae_V3(
+    GroupDataSpecialPoint *group1,
+    GroupDataSpecialPoint *group2
 );
 UINT8 CompairMinutiae_V2(
     SpecialPoint *minus1,

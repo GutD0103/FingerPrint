@@ -247,6 +247,8 @@ UINT8 CompairMinutiae_V3(
 
     UINT8 counter = 0;
     UINT8 result = 0;
+
+    UINT8 mangIJK[group1->numberOfTriangle*3];
     for(int i = 0; i < group1->numberOfTriangle; i++ ){
         for(int j = 0; j< group2->numberOfTriangle; j++){
             counter+=1;
@@ -357,195 +359,202 @@ UINT8 CompairMinutiae_V3(
      free(group2);
      return sodiemtrung;
 }
-UINT8 CompairMinutiae_V2(
-    SpecialPoint *minus1,
-    SpecialPoint *minus2
-)
-{
-    // printf("So diem dac biet 1 la: %d\n", minus1->Count);
-    // printf("So diem dac biet 2 la: %d\n", minus2->Count);
-    UINT32 sodiemdactrung1 = minus1->Count;
-    UINT32 sodiemdactrung2 = minus2->Count;
-    int numElements1 = factorial1(sodiemdactrung1) / (factorial1(3) * factorial1(sodiemdactrung1 - 3));
-    // tính số nhóm 3 điểm
-    int numElements2 = factorial1(sodiemdactrung2) / (factorial1(3) * factorial1(sodiemdactrung2 - 3));
 
-    GroupDataSpecialPoint* group1 = (GroupDataSpecialPoint*)malloc(numElements1 * sizeof(GroupDataSpecialPoint));
-    GroupDataSpecialPoint* group2 = (GroupDataSpecialPoint*)malloc(numElements2 * sizeof(GroupDataSpecialPoint)) ;
 
-    UINT8 mangIJK[20];
 
-    int result = 0;
-    int counter = 0;// biến đếm vòng for
-    float dx1;
-    float dy1;
-    float dx2;
-    float dy2;
-    float dx3;
-    float dy3;
+
+
+
+// --------------------------------------------------------------------------------//
+// UINT8 CompairMinutiae_V2(
+//     SpecialPoint *minus1,
+//     SpecialPoint *minus2
+// )
+// {
+//     // printf("So diem dac biet 1 la: %d\n", minus1->Count);
+//     // printf("So diem dac biet 2 la: %d\n", minus2->Count);
+//     UINT32 sodiemdactrung1 = minus1->Count;
+//     UINT32 sodiemdactrung2 = minus2->Count;
+//     int numElements1 = factorial1(sodiemdactrung1) / (factorial1(3) * factorial1(sodiemdactrung1 - 3));
+//     // tính số nhóm 3 điểm
+//     int numElements2 = factorial1(sodiemdactrung2) / (factorial1(3) * factorial1(sodiemdactrung2 - 3));
+
+//     GroupDataSpecialPoint* group1 = (GroupDataSpecialPoint*)malloc(numElements1 * sizeof(GroupDataSpecialPoint));
+//     GroupDataSpecialPoint* group2 = (GroupDataSpecialPoint*)malloc(numElements2 * sizeof(GroupDataSpecialPoint)) ;
+
+//     UINT8 mangIJK[20];
+
+//     int result = 0;
+//     int counter = 0;// biến đếm vòng for
+//     float dx1;
+//     float dy1;
+//     float dx2;
+//     float dy2;
+//     float dx3;
+//     float dy3;
     
-    int _distanceLimit = 2;
+//     int _distanceLimit = 2;
 
-    for(int i = 0; i < minus1->Count -2; i++ ){
+//     for(int i = 0; i < minus1->Count -2; i++ ){
 
-        for(int j = i+1; j< minus1->Count - 1; j++){
+//         for(int j = i+1; j< minus1->Count - 1; j++){
             
-            for(int k = j+1; k < minus1->Count; k++){
+//             for(int k = j+1; k < minus1->Count; k++){
 
-                dx1 = minus1->minus[j].x - minus1->minus[i].x;
-                dy1 = minus1->minus[j].y - minus1->minus[i].y;
+//                 dx1 = minus1->minus[j].x - minus1->minus[i].x;
+//                 dy1 = minus1->minus[j].y - minus1->minus[i].y;
 
-                dx2 = minus1->minus[k].x - minus1->minus[i].x;
-                dy2 = minus1->minus[k].y - minus1->minus[i].y;
+//                 dx2 = minus1->minus[k].x - minus1->minus[i].x;
+//                 dy2 = minus1->minus[k].y - minus1->minus[i].y;
 
-                dx3 = minus1->minus[k].x - minus1->minus[j].x;
-                dy3 = minus1->minus[k].y - minus1->minus[j].y;
+//                 dx3 = minus1->minus[k].x - minus1->minus[j].x;
+//                 dy3 = minus1->minus[k].y - minus1->minus[j].y;
 
 
-                group1[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
-                group1[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
-                group1[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
+//                 group1[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
+//                 group1[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
+//                 group1[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
 
-                group1[counter].status = 0;
-                group1[counter].id = i*100 + j*10 + k;
-                counter+=1;
-            }
-        }
-    }
-    printf("So tam giac group1 la: %d\n", counter);
-    counter = 0;
-    for(int i = 0; i < minus2->Count -2; i++ ){
-        for(int j = i+1; j< minus2->Count - 1; j++){
-            for(int k = j+1; k < minus2->Count; k++){
-                dx1 = minus2->minus[j].x - minus2->minus[i].x;
-                dy1 = minus2->minus[j].y - minus2->minus[i].y;
-                dx2 = minus2->minus[k].x - minus2->minus[i].x;
-                dy2 = minus2->minus[k].y - minus2->minus[i].y;
-                dx3 = minus2->minus[k].x - minus2->minus[j].x;
-                dy3 = minus2->minus[k].y - minus2->minus[j].y;
+//                 group1[counter].status = 0;
+//                 group1[counter].id = i*100 + j*10 + k;
+//                 counter+=1;
+//             }
+//         }
+//     }
+//     printf("So tam giac group1 la: %d\n", counter);
+//     counter = 0;
+//     for(int i = 0; i < minus2->Count -2; i++ ){
+//         for(int j = i+1; j< minus2->Count - 1; j++){
+//             for(int k = j+1; k < minus2->Count; k++){
+//                 dx1 = minus2->minus[j].x - minus2->minus[i].x;
+//                 dy1 = minus2->minus[j].y - minus2->minus[i].y;
+//                 dx2 = minus2->minus[k].x - minus2->minus[i].x;
+//                 dy2 = minus2->minus[k].y - minus2->minus[i].y;
+//                 dx3 = minus2->minus[k].x - minus2->minus[j].x;
+//                 dy3 = minus2->minus[k].y - minus2->minus[j].y;
 
-                group2[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
-                group2[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
-                group2[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
+//                 group2[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
+//                 group2[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
+//                 group2[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
              
 
-               group2[counter].status = 0;
-               group2[counter].id = i*100 + j*10 + k;
+//                group2[counter].status = 0;
+//                group2[counter].id = i*100 + j*10 + k;
 
-               counter+=1;
-            }
-        }
-    }
+//                counter+=1;
+//             }
+//         }
+//     }
 
-    printf("So tam giac group2 la: %d\n", counter);
-    counter = 0;
-    for(int i = 0; i < numElements1; i++ ){
-        for(int j = 0; j< numElements2; j++){
-            counter+=1;
-            if(group2[j].status == 0){
+//     printf("So tam giac group2 la: %d\n", counter);
+//     counter = 0;
+//     for(int i = 0; i < numElements1; i++ ){
+//         for(int j = 0; j< numElements2; j++){
+//             counter+=1;
+//             if(group2[j].status == 0){
 
-                if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
 
-                else if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 else if(( fabs(group1[i].bord1 - group2[j].bord1)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
                 
-                else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord3)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
 
-                else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 else if(( fabs(group1[i].bord1 - group2[j].bord2)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord3)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
 
-                else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord1)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord2)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
 
-                else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
-                && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
-                ){
-                    mangIJK[result*3] = group1[i].id/100;
-                    mangIJK[result*3 + 1] = (group1[i].id%100)/10;
-                    mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
-                    result+=1;
-                    group2[j].status = 1;
-                    break;
-                }
+//                 else if(( fabs(group1[i].bord1 - group2[j].bord3)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord2 - group2[j].bord2)  <= _distanceLimit  )
+//                 && ( fabs(group1[i].bord3 - group2[j].bord1)  <= _distanceLimit  )
+//                 ){
+//                     mangIJK[result*3] = group1[i].id/100;
+//                     mangIJK[result*3 + 1] = (group1[i].id%100)/10;
+//                     mangIJK[result*3 + 2] = ((group1[i].id%100)%10);
+//                     result+=1;
+//                     group2[j].status = 1;
+//                     break;
+//                 }
 
 
-            }
-        }
-    }
+//             }
+//         }
+//     }
 
-    UINT8 sodiemtrung=0;
+//     UINT8 sodiemtrung=0;
 
-    if(result>0){
-        sodiemtrung +=1;
-    }
+//     if(result>0){
+//         sodiemtrung +=1;
+//     }
 
-    UINT8 coincide = 0;
-    for(int i = 1; i < result*3; i++){
-        coincide = 0;
-        for(int j = i-1; j >= 0; j--){
-            if(mangIJK[i] == mangIJK[j]){
-                coincide = 1;
-            }
-            //printf("%d---------------%d\n",mangIJK[i],mangIJK[j]);
-        }
-        if(coincide == 0){
-            sodiemtrung +=1;
-        }
-    }
-    // for(int i = 0; i < result*3;i++){
-    //     printf("-----------%d\n",mangIJK[i]);
-    // }
-     printf("So tam giac trung nhau la: %d\n", result);
-     printf("So diem trung nhau theo phuong phap 2 la: %d\n", sodiemtrung);
-     free(group1);
-     free(group2);
-     return 0;
-}
+//     UINT8 coincide = 0;
+//     for(int i = 1; i < result*3; i++){
+//         coincide = 0;
+//         for(int j = i-1; j >= 0; j--){
+//             if(mangIJK[i] == mangIJK[j]){
+//                 coincide = 1;
+//             }
+//             //printf("%d---------------%d\n",mangIJK[i],mangIJK[j]);
+//         }
+//         if(coincide == 0){
+//             sodiemtrung +=1;
+//         }
+//     }
+//     // for(int i = 0; i < result*3;i++){
+//     //     printf("-----------%d\n",mangIJK[i]);
+//     // }
+//      printf("So tam giac trung nhau la: %d\n", result);
+//      printf("So diem trung nhau theo phuong phap 2 la: %d\n", sodiemtrung);
+//      free(group1);
+//      free(group2);
+//      return 0;
+// }

@@ -78,31 +78,30 @@ int main(){
 
   Image1->Height = MaxHeight;
   Image1->Width = MaxWidth;
+  Image2->Height = MaxHeight;
+  Image2->Width = MaxWidth;
+
+  GroupDataSpecialPoint * listTriangle1;
+  GroupDataSpecialPoint * listTriangle2;
+  
+  SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
+  SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
+
+
 
   CopyMem(Image1->data, New_009, sizeof(New_009));
   saveImageDataToTxt(Image1,"output.txt");
   ToNornal(Image1, m_para,v_para); //
-  
   SetImage(Image1, WidthSquare);
- 
   ToFiltring(Image1, WidthSquare); //
-  
   ToBinary(Image1,threshold_para,WidthSquare);
- 
   ToBoneImage(Image1);
   //saveImageDataToTxt(Image1,"output.txt");
-
-  SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
-
-  draw(minus1,Image1);
-  saveImageDataToTxt(Image1,"output1.txt");
-  
-    
+  UINT8 NumTri1 = GetTriangle(minus1,listTriangle1);                             printf("%d--\n",NumTri1);
+  //draw(minus1,Image1);
+  //saveImageDataToTxt(Image1,"output1.txt");
   free(Image1);
- 
-  Image2->Height = MaxHeight;
-  Image2->Width = MaxWidth;
 
 
 
@@ -110,24 +109,23 @@ int main(){
   CopyMem(Image2->data, New_005, sizeof(New_005));
   saveImageDataToTxt(Image2,"output2.txt");
   ToNornal(Image2, m_para,v_para);
-  
   SetImage(Image2, WidthSquare);
   ToFiltring(Image2, WidthSquare);
-  
   ToBinary(Image2,threshold_para,WidthSquare);
-  
-
   ToBoneImage(Image2);
-
   //saveImageDataToTxt(Image2,"output2.txt");
-
-  SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
   GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
-  draw(minus2,Image2);
-  saveImageDataToTxt(Image2,"output3.txt");
+  UINT8 NumTri2 = GetTriangle(minus2,listTriangle2);                            printf("%d--\n",NumTri2);
+  //draw(minus2,Image2);
+  //saveImageDataToTxt(Image2,"output3.txt");
   free(Image2);
+
+
+
+
   UINT8 result = CompairMinutiae(minus1, minus2);
-  UINT8 result1 = CompairMinutiae_V3(minus1, minus2);
+  UINT8 result1 = CompairMinutiae_V3(listTriangle1, listTriangle2);
+  printf("aaa");
   free(minus1);
   free(minus2);
 
