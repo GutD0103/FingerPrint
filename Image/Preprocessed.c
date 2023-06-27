@@ -467,23 +467,24 @@ VOID GetMinutiae
 	}
 }
 //---------------------------------------------------------------
-unsigned long long factorial(unsigned int num) {
+UINT16 factorial(UINT8 num) {
     if (num == 0)
         return 1;
     else
         return num * factorial(num - 1);
 }
-GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle){
+
+GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint){
 	UINT8 CountSpecialPoint = ListSpecialPoint->Count;
-	int NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));   
-	ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
-	int counter = 0;
-	float dx1;
-    float dy1;
-    float dx2;
-    float dy2;
-    float dx3;
-    float dy3;
+	UINT16 NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));   
+	GroupDataSpecialPoint *ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
+	INT8 counter = 0;
+	INT8 dx1;
+    INT8 dy1;
+    INT8 dx2;
+    INT8 dy2;
+    INT8 dx3;
+    INT8 dy3;
 
 	for(int i = 0; i < CountSpecialPoint -2; i++ ){
 

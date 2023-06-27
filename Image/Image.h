@@ -118,8 +118,7 @@ VOID GetMinutiae
 );
 
 GroupDataSpecialPoint* GetTriangle(
-    SpecialPoint *ListSpecialPoint, 
-    GroupDataSpecialPoint *ListTriangle
+    SpecialPoint *ListSpecialPoint
 );
 
 UINT8 CompairMinutiae(

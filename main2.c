@@ -98,7 +98,7 @@ int main(){
   ToBoneImage(Image1);
   //saveImageDataToTxt(Image1,"output.txt");
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
-  listTriangle1 = GetTriangle(minus1,listTriangle1);                             
+  listTriangle1 = GetTriangle(minus1);                             
   //draw(minus1,Image1);
   //saveImageDataToTxt(Image1,"output1.txt");
   free(Image1);
@@ -115,7 +115,7 @@ int main(){
   ToBoneImage(Image2);
   //saveImageDataToTxt(Image2,"output2.txt");
   GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
-  listTriangle2 = GetTriangle(minus2,listTriangle2);                           
+  listTriangle2 = GetTriangle(minus2);                           
   //draw(minus2,Image2);
   //saveImageDataToTxt(Image2,"output3.txt");
   free(Image2);
