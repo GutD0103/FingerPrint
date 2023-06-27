@@ -467,3 +467,49 @@ VOID GetMinutiae
 	}
 }
 //---------------------------------------------------------------
+unsigned long long factorial(unsigned int num) {
+    if (num == 0)
+        return 1;
+    else
+        return num * factorial(num - 1);
+}
+UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle){
+	UINT8 CountSpecialPoint = ListSpecialPoint->Count;
+	int NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));
+	ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
+	UINT8 counter = 0;
+	float dx1;
+    float dy1;
+    float dx2;
+    float dy2;
+    float dx3;
+    float dy3;
+
+	for(int i = 0; i < CountSpecialPoint -2; i++ ){
+
+        for(int j = i+1; j< CountSpecialPoint - 1; j++){
+            
+            for(int k = j+1; k < CountSpecialPoint ; k++){
+
+                dx1 = ListSpecialPoint->minus[j].x - ListSpecialPoint->minus[i].x;
+                dy1 = ListSpecialPoint->minus[j].y - ListSpecialPoint->minus[i].y;
+
+                dx2 = ListSpecialPoint->minus[k].x - ListSpecialPoint->minus[i].x;
+                dy2 = ListSpecialPoint->minus[k].y - ListSpecialPoint->minus[i].y;
+
+                dx3 = ListSpecialPoint->minus[k].x - ListSpecialPoint->minus[j].x;
+                dy3 = ListSpecialPoint->minus[k].y - ListSpecialPoint->minus[j].y;
+
+
+                ListTriangle[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
+                ListTriangle[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
+                ListTriangle[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
+
+                ListTriangle[counter].status = 0;
+                ListTriangle[counter].id = i*100 + j*10 + k;
+                counter+=1;
+            }
+        }
+    }
+	return counter;
+}

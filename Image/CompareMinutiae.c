@@ -230,13 +230,13 @@ UINT8 CompairMinutiae(
 //---------------------------------------------------------------
 
 // -------------------------------------------------------
-unsigned long long factorial(unsigned int num) {
-    if (num == 0)
-        return 1;
-    else
-        return num * factorial(num - 1);
-}
 
+UINT8 CompairMinutiae_V3(
+    GroupDataSpecialPoint *group1,
+    GroupDataSpecialPoint *group2
+){
+
+}
 UINT8 CompairMinutiae_V2(
     SpecialPoint *minus1,
     SpecialPoint *minus2

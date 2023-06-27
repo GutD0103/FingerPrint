@@ -105,6 +105,7 @@ VOID ToBoneImage(Image *image);
 
 VOID RidgeThin(Image *image);
 
+
 VOID GetMinutiae 
 (
 	SpecialPoint *minus, 
@@ -114,6 +115,8 @@ VOID GetMinutiae
 	UINT8 rightPadding,
 	UINT8 bottomPadding
 );
+
+UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle);
 
 UINT8 CompairMinutiae(
     SpecialPoint *minus1,
@@ -127,6 +130,10 @@ UINT8 CompairMinutiae_V2(
 
 VOID RidgeThin(Image *image);
 
+UINT8 CompairMinutiae_V2(
+    SpecialPoint *minus1,
+    SpecialPoint *minus2
+);
 UINT8 CompairMinutiae_V2(
     SpecialPoint *minus1,
     SpecialPoint *minus2
