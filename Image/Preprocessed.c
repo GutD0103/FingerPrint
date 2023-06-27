@@ -473,11 +473,11 @@ unsigned long long factorial(unsigned int num) {
     else
         return num * factorial(num - 1);
 }
-UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle){
+GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle){
 	UINT8 CountSpecialPoint = ListSpecialPoint->Count;
 	int NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));   
 	ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
-	UINT8 counter = 0;
+	int counter = 0;
 	float dx1;
     float dy1;
     float dx2;
@@ -511,6 +511,6 @@ UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTri
             }
         }
     }
-	ListTriangle->numberOfTriangle = counter;                       printf("%d+-\n",ListTriangle->numberOfTriangle);
-	return counter;
+	ListTriangle->numberOfTriangle = counter;                       printf("%d+----------------\n",ListTriangle->numberOfTriangle);
+	return ListTriangle;
 }

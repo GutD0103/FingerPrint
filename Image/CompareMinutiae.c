@@ -242,15 +242,17 @@ UINT8 CompairMinutiae_V3(
     GroupDataSpecialPoint *group2
 ){
     int _distanceLimit = 2;
-    printf("So tam giac group1 la: %d\n", group1->numberOfTriangle);
-    printf("So tam giac group2 la: %d\n", group2->numberOfTriangle);
+    UINT8 NumTriangle1 = group1->numberOfTriangle;
+    UINT8 NumTriangle2 = group2->numberOfTriangle;
+    printf("So tam giac group1 la: %d\n", NumTriangle1);
+    printf("So tam giac group2 la: %d\n", NumTriangle2);
 
-    UINT8 counter = 0;
-    UINT8 result = 0;
-
-    UINT8 mangIJK[group1->numberOfTriangle*3];
-    for(int i = 0; i < group1->numberOfTriangle; i++ ){
-        for(int j = 0; j< group2->numberOfTriangle; j++){
+    int counter = 0;
+    int result = 0;
+    
+    UINT8 mangIJK[NumTriangle1*3];
+    for(int i = 0; i < NumTriangle1; i++ ){
+        for(int j = 0; j< NumTriangle2; j++){
             counter+=1;
             if(group2[j].status == 0){
 

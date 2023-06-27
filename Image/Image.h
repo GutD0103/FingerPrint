@@ -82,7 +82,7 @@ typedef struct
     float bord3;
     int status; // state of the triangle, 1 is confirmed match, 0 is not
     int id; // each set of 3 special points will have a characteristic ID based on the i j k indices of the for . loop
-    int numberOfTriangle;
+    UINT8 numberOfTriangle;
 } GroupDataSpecialPoint;
 
 
@@ -117,7 +117,10 @@ VOID GetMinutiae
 	UINT8 bottomPadding
 );
 
-UINT8 GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpecialPoint *ListTriangle);
+GroupDataSpecialPoint* GetTriangle(
+    SpecialPoint *ListSpecialPoint, 
+    GroupDataSpecialPoint *ListTriangle
+);
 
 UINT8 CompairMinutiae(
     SpecialPoint *minus1,
