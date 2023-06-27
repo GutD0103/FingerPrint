@@ -511,6 +511,6 @@ GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint, GroupDataSpec
             }
         }
     }
-	ListTriangle->numberOfTriangle = counter;                       printf("%d+----------------\n",ListTriangle->numberOfTriangle);
+	ListTriangle->numberOfTriangle = NumElement;
 	return ListTriangle;
 }

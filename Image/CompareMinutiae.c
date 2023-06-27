@@ -242,17 +242,15 @@ UINT8 CompairMinutiae_V3(
     GroupDataSpecialPoint *group2
 ){
     int _distanceLimit = 2;
-    UINT8 NumTriangle1 = group1->numberOfTriangle;
-    UINT8 NumTriangle2 = group2->numberOfTriangle;
-    printf("So tam giac group1 la: %d\n", NumTriangle1);
-    printf("So tam giac group2 la: %d\n", NumTriangle2);
+    printf("So tam giac group1 la: %d\n", group1->numberOfTriangle);
+    printf("So tam giac group2 la: %d\n", group2->numberOfTriangle);
 
     int counter = 0;
     int result = 0;
     
-    UINT8 mangIJK[NumTriangle1*3];
-    for(int i = 0; i < NumTriangle1; i++ ){
-        for(int j = 0; j< NumTriangle2; j++){
+    UINT8 mangIJK[group1->numberOfTriangle*3];
+    for(int i = 0; i < group1->numberOfTriangle; i++ ){
+        for(int j = 0; j< group2->numberOfTriangle; j++){
             counter+=1;
             if(group2[j].status == 0){
 
@@ -346,15 +344,12 @@ UINT8 CompairMinutiae_V3(
             if(mangIJK[i] == mangIJK[j]){
                 coincide = 1;
             }
-            //printf("%d---------------%d\n",mangIJK[i],mangIJK[j]);
         }
         if(coincide == 0){
             sodiemtrung +=1;
         }
     }
-    // for(int i = 0; i < result*3;i++){
-    //     printf("-----------%d\n",mangIJK[i]);
-    // }
+
      printf("So tam giac trung nhau la: %d\n", result);
      printf("So diem trung nhau theo phuong phap 2 la: %d\n", sodiemtrung);
      free(group1);
