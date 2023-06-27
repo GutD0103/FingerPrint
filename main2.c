@@ -123,7 +123,7 @@ int main(){
 
 
  
-  //UINT8 result = CompairMinutiae(minus1, minus2);
+  UINT8 result = CompairMinutiae(minus1, minus2);
   UINT8 result1 = CompairMinutiae_V3(listTriangle1, listTriangle2);
   free(minus1);
   free(minus2);

@@ -219,10 +219,10 @@ UINT8 CompairMinutiae(
     printf("count = %d, minuNumberCompair = %d \n", count, minuNumberCompair);
 	
     if(count>=minuNumberCompair){
-        printf("Hai van tay trung khop\n");
+        printf("Hai van tay trung khop\n\n");
         return 1;
     }else{
-        printf("Hai van tay KHONG trung khop\n");
+        printf("Hai van tay KHONG trung khop\n\n");
         return 0;
     }		
 }
