@@ -8,7 +8,7 @@
 #define MaxWidth            88
 #define ImageIsSquare
 #define MaskNumber          32
-#define MaxSpecialPoint     20
+#define MaxSpecialPoint     50
 #define PI   3.141592653589793
 
 #define MaxTriangle         5
@@ -21,6 +21,17 @@
 #define fi_para  4 //3
 
 //padding
+
+// #define left1           5
+// #define top1            5
+// #define right1          5
+// #define bottom1         5
+// #define left2            5
+// #define top2             5
+// #define right2          5
+// #define bottom2         5
+// #define padding             5
+
 #define left1  10
 #define top1  10
 #define right1  10
@@ -30,7 +41,6 @@
 #define right2  10
 #define bottom2  10
 #define padding 10
-
 //compare options
 #define angleLimit  5
 #define distanceLimit  5
@@ -82,7 +92,7 @@ typedef struct
     float bord3;
     int status; // state of the triangle, 1 is confirmed match, 0 is not
     int id; // each set of 3 special points will have a characteristic ID based on the i j k indices of the for . loop
-    UINT8 numberOfTriangle;
+    long int numberOfTriangle;
 } GroupDataSpecialPoint;
 
 

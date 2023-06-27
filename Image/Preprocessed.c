@@ -467,7 +467,7 @@ VOID GetMinutiae
 	}
 }
 //---------------------------------------------------------------
-UINT16 factorial(UINT8 num) {
+long long int factorial(long long int num) {
     if (num == 0)
         return 1;
     else
@@ -476,22 +476,21 @@ UINT16 factorial(UINT8 num) {
 
 GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint){
 	UINT8 CountSpecialPoint = ListSpecialPoint->Count;
-	UINT16 NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));   
+	long long int NumElement = factorial(CountSpecialPoint) / (6 * factorial(CountSpecialPoint - 3));   
 	GroupDataSpecialPoint *ListTriangle = (GroupDataSpecialPoint*)malloc(NumElement * sizeof(GroupDataSpecialPoint));
-	INT8 counter = 0;
+	int counter = 0;
 	INT8 dx1;
     INT8 dy1;
     INT8 dx2;
     INT8 dy2;
     INT8 dx3;
     INT8 dy3;
-
+      
 	for(int i = 0; i < CountSpecialPoint -2; i++ ){
 
         for(int j = i+1; j< CountSpecialPoint - 1; j++){
             
             for(int k = j+1; k < CountSpecialPoint ; k++){
-
                 dx1 = ListSpecialPoint->minus[j].x - ListSpecialPoint->minus[i].x;
                 dy1 = ListSpecialPoint->minus[j].y - ListSpecialPoint->minus[i].y;
 
@@ -504,6 +503,8 @@ GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint){
 
                 ListTriangle[counter].bord1 = sqrt(dx1*dx1 + dy1*dy1);
                 ListTriangle[counter].bord2 = sqrt(dx2*dx2 + dy2*dy2);
+				float hehe = sqrt(dx3*dx3 + dy3*dy3);
+				//printf("%d----%d------------%d------------%d----------%f\n",counter,i,j,k,hehe);
                 ListTriangle[counter].bord3 = sqrt(dx3*dx3 + dy3*dy3);
 
                 ListTriangle[counter].status = 0;
@@ -512,6 +513,7 @@ GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint){
             }
         }
     }
+	            
 	ListTriangle->numberOfTriangle = NumElement;
 	return ListTriangle;
 }
