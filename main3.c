@@ -120,11 +120,13 @@ int main(){
   SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
   SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
   
-  CopyMem(Image1->data, New_009, sizeof(New_009)); 
-   saveImageDataToTxt(Image1,"output1.txt");              
-  GetMinutiae_v2(Image1,minus1);
-  saveImageIscheckToTxt(Image1,"output.txt");      
-  //printfIscheck(Image1);
+  CopyMem(Image1->data, New_009, sizeof(New_009));   
+  //saveImageDataToTxt(Image1,"output1.txt");  
+  GetMinutiae_v2(Image1,minus1); 
+  
+  //saveImageIscheckToTxt(Image1,"output.txt");
+
+  printfIscheck(Image1);
   free(Image1);
 
 

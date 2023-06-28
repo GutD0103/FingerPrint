@@ -1,4 +1,5 @@
 #include "newPreprocessed.h"
+int counter = 0;
 float round1(float input){
     return floor(input+0.5);
 }
@@ -70,38 +71,6 @@ float TangentDir(Image *image, Point point) {
     return phit;
 }
 
-// float TangentDir(Image *image, Point point)
-// {
-//             int Ax = 0;
-//             int Ay = 0;
-//             int Axy = 0;
-//             int Bx = 0;
-//             int By = 0;
-
-//             int startX = point.x - WidthSquare;
-//             int endX = point.x + WidthSquare - 1;
-//             int startY = point.y - WidthSquare;
-//             int endY = point.y + WidthSquare - 1;
-//             int size = MaxWidth;
-
-//             for (int i = startX; i < endX; i++) {
-//                 for (int j = startY; j < endY; j++) {
-// 					UINT8 *subImage = &(image->data[i ][j ]);
-//                     //Bx = ((data[i + 2][j] + 2 * data[i + 2][j + 1] + data[i + 2][j + 2] - data[i][j] - 2 * data[i][j + 1] - data[i][j + 2]));
-//                     //By = ((data[i][j + 2] + 2 * data[i + 1][j + 2] + data[i + 2][j + 2] - data[i][j] - 2 * data[i + 1][j] - data[i + 2][j]));
-                   
-// 				    Bx = ((*(subImage + size*2) + 2**(subImage + size*2 + 1) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + 1) - *(subImage + 2)));
-// 					By = ((*(subImage + 2) + 2**(subImage + size + 2) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + size) - *(subImage + size*2)));
-					
-// 					Ax += Bx * Bx;
-//                     Ay += By * By;
-//                     Axy += Bx * By;
-//                 }
-//             }
-
-// 			float direction = PI / 2 - 0.5 * atan2_approximation2(2 * Axy, Ax - Ay);
-//     return direction;
-// }
 
 Point localMax(Image *image, Point point, float direction) {
     float filter[] = { 1.0 / 23, 2.0 / 23, 5.0 / 23, 7.0 / 23, 5.0 / 23, 2.0 / 23, 1.0 / 23 };
@@ -138,6 +107,7 @@ Point localMax(Image *image, Point point, float direction) {
             result.grayValue = (UINT8)LMn[x];
         }
     }
+    
 
     return result;
 }
@@ -219,87 +189,35 @@ VOID RidgeFollowing(Image *image, Point point, INT8 lengthJump, SpecialPoint *Li
 INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *ListMinutiae) {
 
         double phinDegrees = direction * 180 / PI;
-        int I_threshold = 150;
+        int I_threshold = 200;
         int flag = 0; // flag for check this point is a bifurcation
         int output; 
-        int left, right, top, bottom;
-        if (((phinDegrees > -90) && (phinDegrees <= -67.5)) || ((phinDegrees > 247.5) && (phinDegrees <= 270))) {
-            if (image->isCheck[point.y - 1][point.x] == 1)
-                flag = 1;
-
-            left = 6;
-            right = 4;
-            top = 4;
-            bottom = 4;
-        } else if ((phinDegrees > -67.5) && (phinDegrees <= -22.5)) {
-            if (image->isCheck[point.y - 1][point.x + 1] == 1)
-                flag = 1;
-
-            left = 6;
-            right = 4;
-            top = 4;
-            bottom = 6;
-        } else if ((phinDegrees > -22.5) && (phinDegrees <= 22.5)) {
-            if (image->isCheck[point.y][point.x + 1] == 1)
-                flag = 1;
-
-            left = 4;
-            right = 4;
-            top = 4;
-            bottom = 6;
-        } else if ((phinDegrees > 22.5) && (phinDegrees <= 67.5)) {
-            if (image->isCheck[point.y + 1][point.x + 1] == 1)
-                flag = 1;
-
-            left = 4;
-            right = 6;
-            top = 4;
-            bottom = 6;
-        } else if ((phinDegrees > 67.5) && (phinDegrees <= 112.5)) {
-            if (image->isCheck[point.y + 1][point.x] == 1)
-                flag = 1;
-
-            left = 4;
-            right = 6;
-            top = 4;
-            bottom = 4;
-        } else if ((phinDegrees > 112.5) && (phinDegrees <= 157.5)) {
-            if (image->isCheck[point.y + 1][point.x - 1] == 1)
-                flag = 1;
-
-            left = 4;
-            right = 6;
-            top = 6;
-            bottom = 4;
-        } else if ((phinDegrees > 157.5) && (phinDegrees <= 202.5)) {
-            if (image->isCheck[point.y][point.x - 1] == 1)
-                flag = 1;
-
-            left = 4;
-            right = 4;
-            top = 6;
-            bottom = 4;
-        } else {
-            if (image->isCheck[point.y - 1][point.x + 1] == 1)
-                flag = 1;
-
-            left = 6;
-            right = 4;
-            top = 6;
-            bottom = 4;
+        int left = 6, right = 6, top = 6, bottom = 6;
+        float sinn = sin(direction);
+        float coss = cos(direction);
+        for(int i = 3 ; i < 6 ; i++){
+                int x = (INT8) round(point.x + i * coss);
+                int y = (INT8) round(point.y + i * sinn);
+                if (x < padding || x > MaxHeight - padding || y < padding || y > MaxWidth - padding)
+                {
+                    break;
+                }
+                
+                if(image->isCheck[y][x] == 1){
+                    flag = 1;
+                }
         }
-
+        
 
         if (flag) {
             BOOLEAN label = 1;
             for (int i = point.y - top; i <= point.y + bottom; i++) {
                 for (int j = point.x - left; j <= point.x + right; j++) {
-                    if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) || (image->isCheck[i][j] == -1)) {
-                        image->isCheck[i][j] = -1; 
-                        image->isCheck[point.y][point.x] = -1;
+                    if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) ||(image->isCheck[i][j] == 8) ||(image->isCheck[i][j] == 9)) {
+                        image->isCheck[i][j] = 9; 
+                        image->isCheck[point.y][point.x] = 9;
                         deleteMinutiae(ListMinutiae,i,j);
                         label = 0;
-
                     }
                 }
             }
@@ -313,14 +231,14 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
                     image->isCheck[i][j] = 1;
                 }
             }
-
-            if (image->data[point.x][point.y] > I_threshold) {
+            if (image->data[point.x][point.y] > I_threshold && image->data[point.x + 10][point.y] > I_threshold && image->data[point.x - 10][point.y] > I_threshold
+                && image->data[point.x][point.y + 10] > I_threshold && image->data[point.x][point.y - 10] > I_threshold) {
                 int label = 1;
                 for (int i = point.y - top; i <= point.y + bottom; i++) {
                     for (int j = point.x - left; j <= point.x + right; j++) {
-                        if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) || (image->isCheck[i][j] == -1)) {
-                            image->isCheck[i][j] = -1;
-                            image->isCheck[point.y][point.x] = -1;
+                        if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) || (image->isCheck[i][j] == 8) ||(image->isCheck[i][j] == 9)) {
+                            image->isCheck[i][j] = 8;
+                            image->isCheck[point.y][point.x] = 8;
                             deleteMinutiae(ListMinutiae,i,j);
                             label = 0;
                         }
@@ -348,8 +266,8 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
                     _ridgeNearest = ridgeNearest(image,_ridgeNearest);
                     BOOLEAN label = 1;
 
-                    for (int i = _ridgeNearest.y - 2; i <= _ridgeNearest.y + 2; i++) {
-                        for (int j = _ridgeNearest.x - 2; j <= _ridgeNearest.x + 2; j++) {
+                    for (int i = _ridgeNearest.y - 4; i <= _ridgeNearest.y + 4; i++) {
+                        for (int j = _ridgeNearest.x - 4; j <= _ridgeNearest.x + 4; j++) {
                             if (image->isCheck[i][j] == 1) {
                                 label = 0;
                                 i = 100;

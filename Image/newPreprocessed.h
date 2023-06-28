@@ -2,8 +2,8 @@
 #include "Memory.h"
 #include "newMath.h"
 
-#define     LengthRigde             9
-#define     LengthJump              1
+#define     LengthRigde             6
+#define     LengthJump              3
 
 typedef struct 
 {
