@@ -65,6 +65,7 @@ typedef struct
     UINT8  Width;
     UINT8  data[MaxWidth][MaxHeight];
     float   direct[MaxWidth][MaxHeight]; 
+    INT8 isCheck[MaxWidth][MaxHeight];
 }Image;
 
 typedef struct {

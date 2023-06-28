@@ -90,33 +90,32 @@ int main(){
   
 
   CopyMem(Image1->data, New_009, sizeof(New_009));
-  saveImageDataToTxt(Image1,"output.txt");
-  ToNornal(Image1, m_para,v_para); //
+  ToNornal(Image1, m_para,v_para);      
+                                                            saveImageDataToTxt(Image1,"output.txt");                    
   SetImage(Image1, WidthSquare);
-  ToFiltring(Image1, WidthSquare); //
-  ToBinary(Image1,threshold_para,WidthSquare);
-  ToBoneImage(Image1);
-  //saveImageDataToTxt(Image1,"output.txt");
+  ToFiltring(Image1, WidthSquare); 
+                                                            saveImageDataToTxt(Image1,"output1.txt");                         
+  ToBinary(Image1,threshold_para,WidthSquare);          
+  ToBoneImage(Image1);        
+                                                            saveImageDataToTxt(Image1,"output2.txt");                              
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
   GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1);                            
-  //draw(minus1,Image1);
-  //saveImageDataToTxt(Image1,"output1.txt");
+  draw(minus1,Image1);
+                                                            saveImageDataToTxt(Image1,"output3.txt");
   free(Image1);
 
 
-  CopyMem(Image2->data, New_005, sizeof(New_005));
-  saveImageDataToTxt(Image2,"output2.txt");
-  ToNornal(Image2, m_para,v_para);
+  CopyMem(Image2->data, New_005, sizeof(New_005));                
+  ToNornal(Image2, m_para,v_para);                               
   SetImage(Image2, WidthSquare);
   ToFiltring(Image2, WidthSquare);
   ToBinary(Image2,threshold_para,WidthSquare);
   ToBoneImage(Image2);
-  //saveImageDataToTxt(Image2,"output2.txt");
   GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
   GroupDataSpecialPoint * listTriangle2 = GetTriangle(minus2, &NumTriangle2);                           
 
-  //draw(minus2,Image2);
-  //saveImageDataToTxt(Image2,"output3.txt");
+  draw(minus2,Image2);
+
   free(Image2);
 
 
