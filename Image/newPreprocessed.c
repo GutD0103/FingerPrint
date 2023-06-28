@@ -26,39 +26,82 @@ VOID deleteMinutiae(SpecialPoint *ListMinutae,UINT8 x, UINT8 y){
         }
     }
 }
+float TangentDir(Image *image, Point point) {
+    float A = 0;
+    float B = 0;
+    float C = 0;
+    int size = MaxWidth;
 
-float TangentDir(Image *image, Point point)
-{
-            int Ax = 0;
-            int Ay = 0;
-            int Axy = 0;
-            int Bx = 0;
-            int By = 0;
+    for (int y = point.y - WidthSquare; y <= point.y + WidthSquare; y++) {
+        for (int x = point.x - WidthSquare; x <= point.x + WidthSquare; x++) {
+            UINT8 *subImage = &(image->data[y ][x ]);
+            // double ahk = (-I[h - 1][k - 1] + I[h - 1][k + 1] + I[h + 1][k + 1] - I[h + 1][k - 1]) / 4;
+            // double bhk = (-I[h - 1][k - 1] - I[h - 1][k + 1] + I[h + 1][k + 1] + I[h + 1][k - 1]) / 4;
+				
+            float ahk = ( - *(subImage - size - 1) + *(subImage - size + 1) + *(subImage + size + 1) - *(subImage + size - 1)) / 4;
+            float bhk = ( - *(subImage - size - 1) - *(subImage - size + 1) + *(subImage + size + 1) + *(subImage + size - 1)) / 4;
+            A += ahk*ahk;
+            B += bhk*bhk;
+            C += ahk * bhk;
+        }
+    }
 
-            int startX = point.x - WidthSquare;
-            int endX = point.x + WidthSquare - 1;
-            int startY = point.y - WidthSquare;
-            int endY = point.y + WidthSquare - 1;
-            int size = MaxWidth;
+    float t1, t2, phit;
+    if (C > 0) {
+        t1 = 1;
+        t2 = (B - A) / (2 * C) - sqrt(pow((B - A) / (2 * C), 2) + 1);
+    } else if (C < 0) {
+        t1 = 1;
+        t2 = (B - A) / (2 * C) + sqrt(pow((B - A) / (2 * C), 2) + 1);
+    } else if (A <= B) {
+        t1 = 1;
+        t2 = 0;
+    } else {
+        t1 = 0;
+        t2 = 1;
+    }
 
-            for (int i = startX; i < endX; i++) {
-                for (int j = startY; j < endY; j++) {
-					UINT8 *subImage = &(image->data[i ][j ]);
-                    //Bx = ((data[i + 2][j] + 2 * data[i + 2][j + 1] + data[i + 2][j + 2] - data[i][j] - 2 * data[i][j + 1] - data[i][j + 2]));
-                    //By = ((data[i][j + 2] + 2 * data[i + 1][j + 2] + data[i + 2][j + 2] - data[i][j] - 2 * data[i + 1][j] - data[i + 2][j]));
-                   
-				    Bx = ((*(subImage + size*2) + 2**(subImage + size*2 + 1) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + 1) - *(subImage + 2)));
-					By = ((*(subImage + 2) + 2**(subImage + size + 2) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + size) - *(subImage + size*2)));
-					
-					Ax += Bx * Bx;
-                    Ay += By * By;
-                    Axy += Bx * By;
-                }
-            }
+    if (t1 == 0) {
+        phit = PI / 2;
+    } else {
+        phit = atan(t2 / t1);
+    }
 
-			float direction = PI / 2 - 0.5 * atan2_approximation2(2 * Axy, Ax - Ay);
-    return direction;
+    return phit;
 }
+
+// float TangentDir(Image *image, Point point)
+// {
+//             int Ax = 0;
+//             int Ay = 0;
+//             int Axy = 0;
+//             int Bx = 0;
+//             int By = 0;
+
+//             int startX = point.x - WidthSquare;
+//             int endX = point.x + WidthSquare - 1;
+//             int startY = point.y - WidthSquare;
+//             int endY = point.y + WidthSquare - 1;
+//             int size = MaxWidth;
+
+//             for (int i = startX; i < endX; i++) {
+//                 for (int j = startY; j < endY; j++) {
+// 					UINT8 *subImage = &(image->data[i ][j ]);
+//                     //Bx = ((data[i + 2][j] + 2 * data[i + 2][j + 1] + data[i + 2][j + 2] - data[i][j] - 2 * data[i][j + 1] - data[i][j + 2]));
+//                     //By = ((data[i][j + 2] + 2 * data[i + 1][j + 2] + data[i + 2][j + 2] - data[i][j] - 2 * data[i + 1][j] - data[i + 2][j]));
+                   
+// 				    Bx = ((*(subImage + size*2) + 2**(subImage + size*2 + 1) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + 1) - *(subImage + 2)));
+// 					By = ((*(subImage + 2) + 2**(subImage + size + 2) + *(subImage + size*2 + 2) - *subImage - 2**(subImage + size) - *(subImage + size*2)));
+					
+// 					Ax += Bx * Bx;
+//                     Ay += By * By;
+//                     Axy += Bx * By;
+//                 }
+//             }
+
+// 			float direction = PI / 2 - 0.5 * atan2_approximation2(2 * Axy, Ax - Ay);
+//     return direction;
+// }
 
 Point localMax(Image *image, Point point, float direction) {
     float filter[] = { 1.0 / 23, 2.0 / 23, 5.0 / 23, 7.0 / 23, 5.0 / 23, 2.0 / 23, 1.0 / 23 };
@@ -103,21 +146,21 @@ Point ridgeNearest(Image *image, Point point) {
 
 
     double direction = TangentDir(image,point);
-    INT8 i1 = round(point.x - (LengthRigde*2 - 3) * cos(direction + PI / 2));
-    INT8 j1 = round(point.y - (LengthRigde*2 - 3) * sin(direction + PI / 2));
+    INT8 x1 = round(point.x - (LengthRigde - 3) * cos(direction + PI / 2));
+    INT8 y1 = round(point.y - (LengthRigde - 3) * sin(direction + PI / 2));
 
     Point _p1 ;
-    _p1.x = i1;
-    _p1.y = j1;
+    _p1.x = x1;
+    _p1.y = y1;
 
     _p1 = localMax(image, _p1, direction);
 
-    INT8 i2 = round(point.x  + (LengthRigde - 3) * cos(direction + PI / 2));
-    INT8 j2 = round(point.y  + (LengthRigde - 3) * sin(direction + PI / 2));
+    INT8 x2 = round(point.x  + (LengthRigde - 3) * cos(direction + PI / 2));
+    INT8 y2 = round(point.y  + (LengthRigde - 3) * sin(direction + PI / 2));
 
     Point _p2;
-    _p2.x=i2;
-    _p2.y=j2;
+    _p2.x=x2;
+    _p2.y=y2;
 
     _p2 = localMax(image, _p2 , direction);
 
@@ -297,7 +340,7 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
         int step = 2;
 
         for (int x = top1; x < MaxWidth - bottom1; x +=2) {
-            for (int y = left1; y < MaxHeight - right1; y +=1) {
+            for (int y = left1; y < MaxHeight - right1; y +=2) {
 
                     Point _ridgeNearest;
                     _ridgeNearest.x = x;
