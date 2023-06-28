@@ -26,11 +26,11 @@
 #define top1            5
 #define right1          5
 #define bottom1         5
-#define left2            5
-#define top2             5
+#define left2           5
+#define top2            5
 #define right2          5
 #define bottom2         5
-#define padding             5
+#define padding         5
 
 // #define left1  10
 // #define top1  10
@@ -73,17 +73,7 @@ typedef struct {
 } MaskFilter;
 
 
-typedef struct 
-{
-    
-    UINT8 distance1;
-    UINT8 distance2;
-    UINT8 distance3;
-    float angle1;
-    float angle2;
-    float angle3;
 
-}SpecialPointValue;
 typedef struct 
 {
     /* data */
@@ -92,17 +82,9 @@ typedef struct
     float bord3;
     int status; // state of the triangle, 1 is confirmed match, 0 is not
     int id; // each set of 3 special points will have a characteristic ID based on the i j k indices of the for . loop
-    long int numberOfTriangle;
 } GroupDataSpecialPoint;
 
 
-
-typedef struct 
-{
-    SpecialPointValue specialPointValue[MaxTriangle];
-    UINT8 Count;
-
-}ListSpecialPointValue;
 
 VOID SetImage(Image	*image,	UINT8 widthSquare);
 
@@ -128,15 +110,11 @@ VOID GetMinutiae
 );
 
 GroupDataSpecialPoint* GetTriangle(
-    SpecialPoint *ListSpecialPoint
+    SpecialPoint *ListSpecialPoint,
+    UINT16* NumTriangle
 );
 
 UINT8 CompairMinutiae(
-    SpecialPoint *minus1,
-    SpecialPoint *minus2
-);
-
-UINT8 CompairMinutiae_V2(
     SpecialPoint *minus1,
     SpecialPoint *minus2
 );
@@ -145,9 +123,8 @@ VOID RidgeThin(Image *image);
 
 UINT8 CompairMinutiae_V3(
     GroupDataSpecialPoint *group1,
-    GroupDataSpecialPoint *group2
+    GroupDataSpecialPoint *group2,
+    UINT16 NumTriangle1,
+    UINT16 NumTriangle2
 );
-UINT8 CompairMinutiae_V2(
-    SpecialPoint *minus1,
-    SpecialPoint *minus2
-);
+

@@ -81,13 +81,13 @@ int main(){
   Image2->Height = MaxHeight;
   Image2->Width = MaxWidth;
 
-  
+  UINT16 NumTriangle1;
+  UINT16 NumTriangle2;
  
   
   SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
   SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
-
-
+  
 
   CopyMem(Image1->data, New_009, sizeof(New_009));
   saveImageDataToTxt(Image1,"output.txt");
@@ -98,8 +98,7 @@ int main(){
   ToBoneImage(Image1);
   //saveImageDataToTxt(Image1,"output.txt");
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
-  INT16 NumAngle1 = 0;
-  GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &(NumAngle1));                            
+  GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1);                            
   //draw(minus1,Image1);
   //saveImageDataToTxt(Image1,"output1.txt");
   free(Image1);
@@ -114,7 +113,7 @@ int main(){
   ToBoneImage(Image2);
   //saveImageDataToTxt(Image2,"output2.txt");
   GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
-  GroupDataSpecialPoint * listTriangle2 = GetTriangle(minus2);                           
+  GroupDataSpecialPoint * listTriangle2 = GetTriangle(minus2, &NumTriangle2);                           
 
   //draw(minus2,Image2);
   //saveImageDataToTxt(Image2,"output3.txt");
@@ -125,7 +124,7 @@ int main(){
 
  
   UINT8 result = CompairMinutiae(minus1, minus2);
-  UINT8 result1 = CompairMinutiae_V3(listTriangle1, listTriangle2);
+  UINT8 result1 = CompairMinutiae_V3(listTriangle1, listTriangle2, NumTriangle1, NumTriangle2);
   free(minus1);
   free(minus2);
   free(listTriangle1);
