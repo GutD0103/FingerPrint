@@ -99,6 +99,7 @@ int main(){
   ToBoneImage(Image1);
   //saveImageDataToTxt(Image1,"output.txt");
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
+
   GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1);                            
   //draw(minus1,Image1);
   //saveImageDataToTxt(Image1,"output1.txt");
