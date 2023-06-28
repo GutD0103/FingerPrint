@@ -45,7 +45,28 @@ VOID saveImageDataToTxt(const Image *image, const char *filename)
 
     fclose(file);
 }
+VOID saveImageIscheckToTxt(const Image *image, const char *filename)
+{
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        printf("\n -- Cannot Open %s -- \n", filename);
+        return;
+    }
 
+    for (int i = 0; i < image->Height; i++)
+    {
+        for (int j = 0; j < image->Width; j++)
+        {
+            UINT8 gray = (image->isCheck[i][j] == 0) ? 255 : 0;
+            fprintf(file, "%d", gray);
+            if (i != image->Height - 1 || j != image->Width - 1)
+                fprintf(file, ",");
+        }
+    }
+
+    fclose(file);
+}
 void drawRedCircle(Image *image, int x, int y, int radius) {
     int i, j;
 
@@ -99,10 +120,11 @@ int main(){
   SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
   SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
   
-  CopyMem(Image1->data, New_009, sizeof(New_009));             
-  saveImageDataToTxt(Image1,"output.txt");      
+  CopyMem(Image1->data, New_009, sizeof(New_009)); 
+   saveImageDataToTxt(Image1,"output1.txt");              
   GetMinutiae_v2(Image1,minus1);
-  printfIscheck(Image1);
+  saveImageIscheckToTxt(Image1,"output.txt");      
+  //printfIscheck(Image1);
   free(Image1);
 
 

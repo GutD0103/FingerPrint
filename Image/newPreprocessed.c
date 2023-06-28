@@ -339,8 +339,8 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
 
         int step = 2;
 
-        for (int x = top1; x < MaxWidth - bottom1; x +=2) {
-            for (int y = left1; y < MaxHeight - right1; y +=2) {
+        for (int x = top1; x < MaxWidth - bottom1; x +=1) {
+            for (int y = left1; y < MaxHeight - right1; y +=1) {
 
                     Point _ridgeNearest;
                     _ridgeNearest.x = x;
@@ -348,8 +348,8 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
                     _ridgeNearest = ridgeNearest(image,_ridgeNearest);
                     BOOLEAN label = 1;
 
-                    for (int i = _ridgeNearest.y - 4; i <= _ridgeNearest.y + 4; i++) {
-                        for (int j = _ridgeNearest.x - 4; j <= _ridgeNearest.x + 4; j++) {
+                    for (int i = _ridgeNearest.y - 2; i <= _ridgeNearest.y + 2; i++) {
+                        for (int j = _ridgeNearest.x - 2; j <= _ridgeNearest.x + 2; j++) {
                             if (image->isCheck[i][j] == 1) {
                                 label = 0;
                                 i = 100;
