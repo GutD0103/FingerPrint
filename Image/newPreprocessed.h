@@ -3,7 +3,8 @@
 #include "newMath.h"
 
 #define     LengthRigde             6
-#define     LengthJump              4
+#define     HALFLengthRigde         3
+#define     LengthJump              1
 
 typedef struct 
 {

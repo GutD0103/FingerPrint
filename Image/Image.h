@@ -22,25 +22,25 @@
 
 //padding
 
-// #define left1           5
-// #define top1            5
-// #define right1          5
-// #define bottom1         5
-// #define left2           5
-// #define top2            5
-// #define right2          5
-// #define bottom2         5
-// #define padding         5
+// #define      left1           5
+// #define      top1            5
+// #define      right1          5
+// #define      bottom1         5
+// #define      left2           5
+// #define      top2            5
+// #define      right2          5
+// #define      bottom2         5
+// #define      padding         5
 
-#define left1  10
-#define top1  10
-#define right1  10
-#define bottom1  10
-#define left2  10
-#define top2  10
-#define right2  10
-#define bottom2  10
-#define padding 10
+#define         left1               10
+#define         top1                10
+#define         right1              10
+#define         bottom1             10
+#define         left2               10
+#define         top2                10
+#define         right2              10      
+#define         bottom2             10
+#define         padding             10
 //compare options
 #define angleLimit  5
 #define distanceLimit  5

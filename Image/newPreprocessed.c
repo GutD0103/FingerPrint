@@ -3,6 +3,35 @@ int counter = 0;
 float round1(float input){
     return floor(input+0.5);
 }
+void DrawLine(Image *image, Point A, Point B) {
+    if ((A.x >= MaxHeight) || (A.x < 0) || (A.y >= MaxHeight) || (A.y < 0) ||
+        (B.x >= MaxHeight) || (B.x < 0) || (B.y >= MaxHeight) || (B.y < 0))
+    {
+        return;
+    }
+    
+    int dx = abs(B.x - A.x);
+    int dy = abs(B.y - A.y);
+    int sx = (A.x < B.x) ? 1 : -1;
+    int sy = (A.y < B.y) ? 1 : -1;
+    int error = dx - dy;
+
+    while (A.x != B.x || A.y != B.y) {
+        image->isCheck[A.y][A.x] = 1;
+        int e2 = 2 * error;
+        if (e2 > -dy) {
+            error -= dy;
+            A.x += sx;
+        }
+        if (e2 < dx) {
+            error += dx;
+            A.y += sy;
+        }
+    }
+
+    image->isCheck[B.y][B.x] = 1;
+
+}
 VOID addMinutiae(SpecialPoint *ListMinutae,UINT8 x, UINT8 y, INT8 type, float direction){
     INT8 cnt = ListMinutae->Count;
     if(cnt < MaxSpecialPoint){
@@ -35,7 +64,7 @@ float TangentDir(Image *image, Point point) {
 
     for (int y = point.y - WidthSquare; y <= point.y + WidthSquare; y++) {
         for (int x = point.x - WidthSquare; x <= point.x + WidthSquare; x++) {
-            UINT8 *SubImage = &(image->data[y ][x ]);
+            UINT8 *subImage = &(image->data[y ][x ]);
             // double ahk = (-I[h - 1][k - 1] + I[h - 1][k + 1] + I[h + 1][k + 1] - I[h + 1][k - 1]) / 4;
             // double bhk = (-I[h - 1][k - 1] - I[h - 1][k + 1] + I[h + 1][k + 1] + I[h + 1][k - 1]) / 4;
             // Bx = ((*(SubImage + size*2) + 2**(SubImage + size*2 + 1) + *(SubImage + size*2 + 2) - *SubImage - 2**(SubImage + 1) - *(SubImage + 2)));
@@ -79,7 +108,7 @@ Point localMax(Image *image, Point point, float direction) {
 
     float LM[LengthRigde * 2 + 1];
     UINT8 x0[LengthRigde * 2 + 1];
-    UINT8 y0[LengthRigde * 2 + 1];
+    UINT8 y0[LengthRigde* 2 + 1];
 
     Point result;
     result.grayValue = 255;
@@ -98,7 +127,7 @@ Point localMax(Image *image, Point point, float direction) {
         y0[cnt + LengthRigde] = y;
     }
 
-    double LMn[LengthRigde * 2 + 1];
+    double LMn[LengthRigde* 2 + 1];
     for (int x = 4; x <= 2 * LengthRigde - 2; x++) {
         LMn[x] = LM[x - 3] * filter[0] + LM[x - 2] * filter[1] + LM[x - 1] * filter[2] + LM[x] * filter[3] +
                  LM[x + 1] * filter[4] + LM[x + 2] * filter[5] + LM[x + 3] * filter[6];
@@ -118,8 +147,8 @@ Point ridgeNearest(Image *image, Point point) {
 
 
     double direction = TangentDir(image,point);
-    INT8 x1 = round(point.x - (LengthRigde - 3) * cos(direction + PI / 2));
-    INT8 y1 = round(point.y - (LengthRigde - 3) * sin(direction + PI / 2));
+    INT8 x1 = round(point.x - HALFLengthRigde * cos(direction + PI / 2));
+    INT8 y1 = round(point.y - HALFLengthRigde * sin(direction + PI / 2));
 
     Point _p1 ;
     _p1.x = x1;
@@ -127,8 +156,8 @@ Point ridgeNearest(Image *image, Point point) {
 
     _p1 = localMax(image, _p1, direction);
 
-    INT8 x2 = round(point.x  + (LengthRigde - 3) * cos(direction + PI / 2));
-    INT8 y2 = round(point.y  + (LengthRigde - 3) * sin(direction + PI / 2));
+    INT8 x2 = round(point.x  + HALFLengthRigde * cos(direction + PI / 2));
+    INT8 y2 = round(point.y  + HALFLengthRigde * sin(direction + PI / 2));
 
     Point _p2;
     _p2.x=x2;
@@ -153,71 +182,67 @@ Point ridgeNearest(Image *image, Point point) {
 /// @param point Start point
 VOID RidgeFollowing(Image *image, Point point, INT8 lengthJump, SpecialPoint *ListMinutiae) {
 
-    int _lengthJump = (lengthJump > 0) ? lengthJump : -lengthJump;
+    int _lengthJump = (lengthJump > 0) ? (lengthJump+1) : -(lengthJump+1);
     float dir0 = (lengthJump > 0) ? 0 : PI;
     float direction = TangentDir(image,point) + dir0;
-    BOOLEAN esc = 1;
+    int esc = 1;
     INT8 type;
 
-    Point nextPoint;
+    Point nextPoint = point;
+    int tempJump = _lengthJump;
+    int time = 0;
+    
     while (esc) {
 
-        nextPoint.x = (INT8) round(point.x + _lengthJump * cos(direction));
-        nextPoint.y = (INT8) round(point.y + _lengthJump * sin(direction));
+        do
+        {
+            nextPoint.x = (INT8) round(point.x + tempJump * cos(direction));
+            nextPoint.y = (INT8) round(point.y + tempJump * sin(direction));
+            tempJump++;
+        } while ((abs(image->data[nextPoint.y][nextPoint.x] - image->data[point.y][point.x]) <= 10) || (point.x == nextPoint.x && point.y == nextPoint.y));
+
         direction = TangentDir(image,nextPoint) + dir0;
-
         nextPoint = localMax(image, nextPoint,direction);
-
+        
         if (nextPoint.x > padding && nextPoint.x < MaxHeight - padding && nextPoint.y > padding && nextPoint.y < MaxHeight - padding) {
-
-            if (nextPoint.x == point.x && nextPoint.y == point.y) {                
-                return;
-            } else {
-                
-                type = StopCriteria(image,nextPoint,direction,ListMinutiae);
-                if(type != 1){
-                    esc = 0;  
-                }
-            }
+            DrawLine(image,point,nextPoint);
+            esc = StopCriteria(image,nextPoint,direction,ListMinutiae);
         }else {
             esc = 0;
         }
 
         point.x = nextPoint.x;
         point.y = nextPoint.y;
+        tempJump = _lengthJump;
         
     }
 }
 INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *ListMinutiae) {
 
-        double phinDegrees = direction * 180 / PI;
+        float phinDegrees = direction * 180 / PI;
         int I_threshold = 200;
         int flag = 0; // flag for check this point is a bifurcation
-        int output; 
+        int output = 1; 
         int left = 6, right = 6, top = 6, bottom = 6;
         float sinn = sin(direction);
         float coss = cos(direction);
-        for(int i = LengthJump ; i < LengthJump + 3 ; i++){
+        for(int i = 0 ; i < 2  ; i++){
                 int x = (INT8) round(point.x + i * coss);
                 int y = (INT8) round(point.y + i * sinn);
                 if (x < padding || x > MaxHeight - padding || y < padding || y > MaxWidth - padding)
                 {
                     break;
                 }
-                
+                if(x == point.x && y == point.y){
+                    continue;
+                }
                 if(image->isCheck[y][x] == 1){
                     flag = 1;
                 }
         }
-
-        for (int i = point.y - 1; i <= point.y + 1; i++) {
-            for (int j = point.x - 1; j <= point.x + 1; j++) {
-                image->isCheck[i][j] = 1;
-            }
-        }
-
         if (flag) {
             BOOLEAN label = 1;
+            output = 0;
             for (int i = point.y - top; i <= point.y + bottom; i++) {
                 for (int j = point.x - left; j <= point.x + right; j++) {
                     if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) ||(image->isCheck[i][j] == 8) ||(image->isCheck[i][j] == 9)) {
@@ -225,16 +250,19 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
                         image->isCheck[point.y][point.x] = 9;
                         deleteMinutiae(ListMinutiae,j,i);
                         label = 0;
+                        printf("day ne");
                     }
                 }
             }
             if (label){
                 image->isCheck[point.y][point.x] = 3;
                 addMinutiae(ListMinutiae,point.x,point.y,2,direction);
+                printf("%f --%f\n",direction,phinDegrees);
             }
         } else {
             if (image->data[point.x][point.y] > I_threshold && image->data[point.x + 2][point.y] > I_threshold && image->data[point.x - 2][point.y] > I_threshold
                 && image->data[point.x][point.y + 2] > I_threshold && image->data[point.x][point.y - 2] > I_threshold) {
+                output = 0;
                 int label = 1;
                 for (int i = point.y - top; i <= point.y + bottom; i++) {
                     for (int j = point.x - left; j <= point.x + right; j++) {
@@ -253,7 +281,7 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
 
         }
 
-        return image->isCheck[point.y][point.x];
+        return output;
 }
 VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
 
@@ -268,9 +296,9 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
                     _ridgeNearest = ridgeNearest(image,_ridgeNearest);
                     BOOLEAN label = 1;
 
-                    for (int i = _ridgeNearest.y - 4; i <= _ridgeNearest.y + 4; i++) {
-                        for (int j = _ridgeNearest.x - 4; j <= _ridgeNearest.x + 4; j++) {
-                            if (image->isCheck[i][j] == 1) {
+                    for (int i = _ridgeNearest.y - 3; i <= _ridgeNearest.y + 3; i++) {
+                        for (int j = _ridgeNearest.x - 3; j <= _ridgeNearest.x + 3; j++) {
+                            if (image->isCheck[i][j] > 0) {
                                 label = 0;
                                 i = 100;
                                 j = 100;

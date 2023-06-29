@@ -86,6 +86,30 @@ void drawRedCircle(Image *image, int x, int y, int radius) {
         }
     }
 }
+void _drawRedCircle(Image *image, int x, int y, int radius, float direction) {
+    int i, j;
+
+    for (i = y - radius; i <= y + radius; i++) {
+        for (j = x - radius; j <= x + radius; j++) {
+            if (i >= 0 && i < MaxWidth && j >=   0 && j < MaxHeight) {
+                int dx = j - x;
+                int dy = i - y;
+                double distance = sqrt(dx * dx + dy * dy);
+                if (distance <= (radius) && distance >= (radius-1)) {
+                    int index = j * MaxWidth + i;
+                    image->data[i][j] = 255;  // Đặt giá trị mức xám là 255 (màu đỏ)
+                }
+            }
+        }
+    }
+    float sinn = sin(direction);
+    float coss = cos(direction);
+    for(int i = 0; i< 8; i++){
+        int _y = round(y + i*sinn);
+        int _x = round(x + i*coss);
+        image->data[_y][_x] = 255;
+    }
+}
 VOID drawError( Image * image){
     for (int i = 0; i < image->Height; i++)
     {
@@ -99,7 +123,7 @@ VOID drawError( Image * image){
 }
 VOID draw(SpecialPoint *minus, Image * image){
     for(int i = 0; i < minus->Count ;i++){
-        drawRedCircle(image,minus->minus[i].y,minus->minus[i].x,3);
+        _drawRedCircle(image,minus->minus[i].x,minus->minus[i].y,3,minus->minus[i].direct);
     }
 }
 VOID printfIscheck(Image *image){
@@ -134,14 +158,14 @@ int main(){
   SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
   
   CopyMem(Image1->data, New_009, sizeof(New_009));   
-                                                                saveImageDataToTxt(Image1,"output.txt");  
-  GetMinutiae_v2(Image1,minus1); 
+                          printf("accac");                                      saveImageDataToTxt(Image1,"output.txt");  
+  GetMinutiae_v2(Image1,minus1);  
                                                                 //drawError(Image1);
                                                                 //saveImageDataToTxt(Image1,"output1.txt");
   display(minus1);
   draw(minus1,Image1); 
-                                                                //saveImageIscheckToTxt(Image1,"output1.txt");
-                                                                saveImageDataToTxt(Image1,"output1.txt");
+                                                                saveImageIscheckToTxt(Image1,"output1.txt");
+                                                                saveImageDataToTxt(Image1,"output2.txt");
                                                                 printfIscheck(Image1);
   free(Image1);
 
