@@ -35,12 +35,12 @@ VOID SetImage(
 
             for (i = startX; i < endX; i++) {
                 for (j = startY; j < endY; j++) {
-					UINT8 *a1 = &(image->data[i ][j ]);
+					UINT8 *SubImage = &(image->data[i ][j ]);
                     //Bx = ((data[i + 2][j] + 2 * data[i + 2][j + 1] + data[i + 2][j + 2] - data[i][j] - 2 * data[i][j + 1] - data[i][j + 2]));
                     //By = ((data[i][j + 2] + 2 * data[i + 1][j + 2] + data[i + 2][j + 2] - data[i][j] - 2 * data[i + 1][j] - data[i + 2][j]));
                    
-				    Bx = ((*(a1 + size*2) + 2**(a1 + size*2 + 1) + *(a1 + size*2 + 2) - *a1 - 2**(a1 + 1) - *(a1 + 2)));
-					By = ((*(a1 + 2) + 2**(a1 + size + 2) + *(a1 + size*2 + 2) - *a1 - 2**(a1 + size) - *(a1 + size*2)));
+				    Bx = ((*(SubImage + size*2) + 2**(SubImage + size*2 + 1) + *(SubImage + size*2 + 2) - *SubImage - 2**(SubImage + 1) - *(SubImage + 2)));
+					By = ((*(SubImage + 2) + 2**(SubImage + size + 2) + *(SubImage + size*2 + 2) - *SubImage - 2**(SubImage + size) - *(SubImage + size*2)));
 					
 					Ax += Bx * Bx;
                     Ay += By * By;
