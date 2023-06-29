@@ -195,7 +195,7 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
         int left = 6, right = 6, top = 6, bottom = 6;
         float sinn = sin(direction);
         float coss = cos(direction);
-        for(int i = 3 ; i < 6 ; i++){
+        for(int i = 1 ; i < LengthJump ; i++){
                 int x = (INT8) round(point.x + i * coss);
                 int y = (INT8) round(point.y + i * sinn);
                 if (x < padding || x > MaxHeight - padding || y < padding || y > MaxWidth - padding)
@@ -216,7 +216,7 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
                     if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) ||(image->isCheck[i][j] == 8) ||(image->isCheck[i][j] == 9)) {
                         image->isCheck[i][j] = 9; 
                         image->isCheck[point.y][point.x] = 9;
-                        deleteMinutiae(ListMinutiae,i,j);
+                        deleteMinutiae(ListMinutiae,j,i);
                         label = 0;
                     }
                 }
@@ -226,20 +226,21 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
                 addMinutiae(ListMinutiae,point.x,point.y,2,direction);
             }
         } else {
+
             for (int i = point.y - 1; i <= point.y + 1; i++) {
                 for (int j = point.x - 1; j <= point.x + 1; j++) {
                     image->isCheck[i][j] = 1;
                 }
             }
-            if (image->data[point.x][point.y] > I_threshold && image->data[point.x + 10][point.y] > I_threshold && image->data[point.x - 10][point.y] > I_threshold
-                && image->data[point.x][point.y + 10] > I_threshold && image->data[point.x][point.y - 10] > I_threshold) {
+            if (image->data[point.x][point.y] > I_threshold && image->data[point.x + 2][point.y] > I_threshold && image->data[point.x - 2][point.y] > I_threshold
+                && image->data[point.x][point.y + 2] > I_threshold && image->data[point.x][point.y - 2] > I_threshold) {
                 int label = 1;
                 for (int i = point.y - top; i <= point.y + bottom; i++) {
                     for (int j = point.x - left; j <= point.x + right; j++) {
                         if ((image->isCheck[i][j] == 2) || (image->isCheck[i][j] == 3) || (image->isCheck[i][j] == 8) ||(image->isCheck[i][j] == 9)) {
                             image->isCheck[i][j] = 8;
                             image->isCheck[point.y][point.x] = 8;
-                            deleteMinutiae(ListMinutiae,i,j);
+                            deleteMinutiae(ListMinutiae,j,i);
                             label = 0;
                         }
                     }
@@ -257,8 +258,8 @@ VOID GetMinutiae_v2(Image *image,SpecialPoint *ListMinutiae){
 
         int step = 2;
 
-        for (int x = top1; x < MaxWidth - bottom1; x +=1) {
-            for (int y = left1; y < MaxHeight - right1; y +=1) {
+        for (int x = top1; x < MaxWidth - bottom1; x +=4) {
+            for (int y = left1; y < MaxHeight - right1; y +=4) {
 
                     Point _ridgeNearest;
                     _ridgeNearest.x = x;
