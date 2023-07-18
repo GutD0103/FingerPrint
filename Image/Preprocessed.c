@@ -535,8 +535,16 @@ VOID MakeBone(Image *image)
 			}
 		}
 
-
-
+		for(int j=1;j<height-1;j++)				
+		{
+			for(int i=1;i<width-1;i++)	
+			{
+				if(temp[i][j])
+				{
+					image->data[i][j] = 255;
+				}
+			}
+		}
 	}
 
 }
