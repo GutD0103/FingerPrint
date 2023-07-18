@@ -1,2 +1,3 @@
 # finger-print
-- NOTE: Nếu thay đổi giá trị của ảnh 70x70 ->XxX thì phải thay đổi hàm SetImage
+- build.bat để chạy main.c, mục đích để chạy tất cả tệp dữ liệu
+- build2.bat để chạy main2.c, mục đích để chạy 2 ảnh được chỉ định ở hàm main()
