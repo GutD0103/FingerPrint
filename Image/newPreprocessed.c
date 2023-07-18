@@ -250,14 +250,12 @@ INT8 StopCriteria(Image *image, Point point, float direction, SpecialPoint *List
                         image->isCheck[point.y][point.x] = 9;
                         deleteMinutiae(ListMinutiae,j,i);
                         label = 0;
-                        printf("day ne");
                     }
                 }
             }
             if (label){
                 image->isCheck[point.y][point.x] = 3;
                 addMinutiae(ListMinutiae,point.x,point.y,2,direction);
-                printf("%f --%f\n",direction,phinDegrees);
             }
         } else {
             if (image->data[point.x][point.y] > I_threshold && image->data[point.x + 2][point.y] > I_threshold && image->data[point.x - 2][point.y] > I_threshold

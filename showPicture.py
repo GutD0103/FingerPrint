@@ -54,17 +54,17 @@ image2.putdata(pixel_values)
 image2.show()
 
 
-# with open(file_path3, 'r') as file:
-#     pixel_values = [int(value) for value in file.read().split(',')]
+with open(file_path3, 'r') as file:
+    pixel_values = [int(value) for value in file.read().split(',')]
 
-# # Tạo hình ảnh mới với kích thước 10x10
-# image_width = 88
-# image_height = 88
-# image3 = Image.new("L", (image_width, image_height))
+# Tạo hình ảnh mới với kích thước 10x10
+image_width = 88
+image_height = 88
+image3 = Image.new("L", (image_width, image_height))
 
-# # Đặt giá trị pixel cho hình ảnh
-# image3.putdata(pixel_values)
+# Đặt giá trị pixel cho hình ảnh
+image3.putdata(pixel_values)
 
-# # Hiển thị hình ảnh
-# image3.show()
+# Hiển thị hình ảnh
+image3.show()
 
