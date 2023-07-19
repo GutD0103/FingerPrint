@@ -195,12 +195,12 @@ VOID t_GetErrorImage(int fileCount,char* SsourceFiles2[150]){
         ToBoneImage(Image1);        
         GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);                      
         if(minus1->Count > 6){
-            remove(sourceFile3);
+            //remove(sourceFile3);
             //printf("more 7: %s\n",sourceFile3);
             more7++;
         }
         else if(minus1->Count < 3){
-            remove(sourceFile3);
+            //remove(sourceFile3);
             //printf("less 3: %s\n",sourceFile3);
             less3++;
         }
@@ -271,7 +271,7 @@ VOID GetTempalte(int fileCount,char* SsourceFiles2[150],char* template[5]){
         ToBinary(Image1,threshold_para,WidthSquare);          
         ToBoneImage(Image1);        
         GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);                      
-        if(minus1->Count <= 7 && minus1->Count >= 3){
+        if(minus1->Count <= 6 && minus1->Count >= 3){
             //template[fileCount3++] = sourceFile3;
             if(!isAlready(list,fileCount3,minus1)){
                 template[fileCount3] = sourceFile3;
@@ -334,8 +334,7 @@ for (int i = start2; i <= end2; i++) {
     SsourceFiles2[fileCount2] = strdup(filename); // Lưu trữ bản sao của tên tệp tin
     fileCount2++;
 }
-
-//t_GetErrorImage(fileCount2,SsourceFiles2);
+// t_GetErrorImage(fileCount2,SsourceFiles2);
 GetTempalte(fileCount2,SsourceFiles2,template);
 // printf("%s\n",template[9]);
 // for(int i = 0; i< 10; i++){
@@ -437,9 +436,9 @@ for (int i = 0; i < fileCount; i++) {
             int minpoint = minus1->Count < minus2->Count ? minus1->Count:minus2->Count;
             float ketqua = (result1/minpoint)*100;
             if(ketqua >= 70){
-                if(strcmp(prefix2,prefix)!=0){
-                    printf("%s------------%s\n",sourceFile1,sourceFile2);
-                }
+                // if(strcmp(prefix2,prefix)!=0){
+                //     printf("%s------------%s\n",sourceFile1,sourceFile2);
+                // }
                 soanhtrung+=1;
                 break;
             }

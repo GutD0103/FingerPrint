@@ -430,7 +430,6 @@ VOID ToBinary(
 }
 
 //---------------------------------------------------------------
-
 //-----------------------To RidgeThin progress----------------------
 
 void RidgeThin(Image *image) 
@@ -735,7 +734,7 @@ VOID GetMinutiae
 					break;
 				}	
 			}
-			else if((Distance > 2 && Distance < 6 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1))
+			else if((Distance > 2 && Distance < 5 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1))
 			{
 				//minus1.RemoveAt(j);
 				for(int b = j; b < minus->Count ; b++)//dich chuyen mang
@@ -843,8 +842,8 @@ GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint, UINT16* NumTr
                 ListTriangle[counter].status = 0;
                 ListTriangle[counter].id = 0;
 				ListTriangle[counter].id =  ListTriangle[counter].id | i;
-				ListTriangle[counter].id = (ListTriangle[counter].id <<8) | j;
-				ListTriangle[counter].id = (ListTriangle[counter].id <<8) | k;
+				ListTriangle[counter].id = (ListTriangle[counter].id << 8) | j;
+				ListTriangle[counter].id = (ListTriangle[counter].id << 8) | k;
                 counter+=1;
             }
         }

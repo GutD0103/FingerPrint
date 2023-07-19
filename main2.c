@@ -181,8 +181,8 @@ int main(){
     temp->Height = MaxHeight;
     temp->Width = MaxWidth;
 
-    const char* sourceFile1 = "u003/fp003/u000_fp003_134.bmp";
-    const char* sourceFile2 = "u003/fp004/u000_fp004_028.bmp";
+    const char* sourceFile1 = "u003/fp004/u000_fp004_114.bmp";
+    const char* sourceFile2 = "u003/fp004/u000_fp004_048.bmp";
     unsigned char* imageData1;
     unsigned char* imageData2;
     Bitmap bmp1 = loadBitmapFromFile(sourceFile1, &imageData1);
@@ -248,10 +248,10 @@ int main(){
   ToBinary(Image1,threshold_para,WidthSquare);
                                                             //PreToBone(temp,Image1);
   ToBoneImage(Image1);
-                                                            saveImageDataToTxt(Image1,"output1.txt");
                                                             //drawDirect(Image1);
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
                                                             draw(minus1,Image1);
+                                                            saveImageDataToTxt(Image1,"output1.txt");
                                                             //DRAW_TOBONE(temp,Image1);
   GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1); 
   if(!listTriangle1){
@@ -265,9 +265,9 @@ int main(){
   ToFiltring_Gabor(Image2, WidthSquare);
   ToBinary(Image2,threshold_para,WidthSquare);
   ToBoneImage(Image2);
-                                                            saveImageDataToTxt(Image2,"output3.txt");
   GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
                                                             draw(minus2,Image2);
+                                                            saveImageDataToTxt(Image2,"output3.txt");
                                                             //drawDirect(Image2);  
   GroupDataSpecialPoint * listTriangle2 = GetTriangle(minus2, &NumTriangle2);    
   if(!listTriangle2){
