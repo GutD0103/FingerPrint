@@ -83,7 +83,6 @@ VOID drawDirect(Image *image){
                 }
             }
         }
-        
     }
 }
 
@@ -181,8 +180,8 @@ int main(){
     temp->Height = MaxHeight;
     temp->Width = MaxWidth;
 
-    const char* sourceFile1 = "u003/fp004/u000_fp004_114.bmp";
-    const char* sourceFile2 = "u003/fp004/u000_fp004_048.bmp";
+    const char* sourceFile1 = "u004/fp005/u000_fp005_001.bmp";
+    const char* sourceFile2 = "u003/fp002/u000_fp002_050.bmp";
     unsigned char* imageData1;
     unsigned char* imageData2;
     Bitmap bmp1 = loadBitmapFromFile(sourceFile1, &imageData1);
@@ -240,6 +239,8 @@ int main(){
 //     printf("%s\n",sourceFile2);
 // }
 
+  printf("%d\n",Segmentation(Image1));
+  printf("%d\n",Segmentation(Image2));
   ToNornal(Image1, m_para,v_para);
   SetImage(Image1, WidthSquare);
                                                             saveImageDataToTxt(Image1,"output.txt");
@@ -250,17 +251,17 @@ int main(){
   ToBoneImage(Image1);
                                                             //drawDirect(Image1);
   GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
-                                                            draw(minus1,Image1);
                                                             saveImageDataToTxt(Image1,"output1.txt");
+                                                            draw(minus1,Image1);
                                                             //DRAW_TOBONE(temp,Image1);
   GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1); 
   if(!listTriangle1){
     
   }    
 
-  ToNornal(Image2, m_para,v_para);                               
-  SetImage(Image2, WidthSquare);
+  ToNornal(Image2, m_para,v_para);
                                                             saveImageDataToTxt(Image2,"output2.txt");
+  SetImage(Image2, WidthSquare);
   ToFiltring_Gaussin(Image2, WidthSquare);
   ToFiltring_Gabor(Image2, WidthSquare);
   ToBinary(Image2,threshold_para,WidthSquare);

@@ -6,78 +6,6 @@ const UINT16 height = MaxHeight;
 const UINT16 width = MaxWidth;
 
 
-INT8 CheckQuality(Image *image)
-{
-	for(int row = 7; row < MaxHeight - 7; row+=14)
-	{
-		for(int col = 7; col < MaxWidth - 7; col+=14)
-		{
-			int SumGrayLevel = 0;
-			int count = 0;
-			for(int i = row - 7; i < row + 7 + 1; i++)
-			{
-				for(int j = col - 7; j < col + 7 + 1; j++)
-				{
-					SumGrayLevel+= image->data[i][j];
-					count++;
-				}
-			}
-			float Mean = (float)SumGrayLevel/count;
-			//printf("Sum: %d  Count: %d OUTPUT: %f\n",SumGrayLevel, count, Mean);
-			if(Mean > 185 || Mean < 50)
-			{
-				return 0;
-			}
-		}
-	}
-	return 1;
-}
-
-float TangentDir(Image *image, int x, int y) {
-    float A = 0;
-    float B = 0;
-    float C = 0;
-    int size = MaxWidth;
-
-    for (int _x = x - WidthSquare; _x <= x + WidthSquare; _x++) {
-        for (int _y = _y - WidthSquare; _y <= y + WidthSquare; _y++) {
-            UINT8 *subImage = &(image->data[_x][_y]);
-            // double ahk = (-I[h - 1][k - 1] + I[h - 1][k + 1] + I[h + 1][k + 1] - I[h + 1][k - 1]) / 4;
-            // double bhk = (-I[h - 1][k - 1] - I[h - 1][k + 1] + I[h + 1][k + 1] + I[h + 1][k - 1]) / 4;
-            // Bx = ((*(SubImage + size*2) + 2**(SubImage + size*2 + 1) + *(SubImage + size*2 + 2) - *SubImage - 2**(SubImage + 1) - *(SubImage + 2)));
-			// By = ((*(SubImage + 2) + 2**(SubImage + size + 2) + *(SubImage + size*2 + 2) - *SubImage - 2**(SubImage + size) - *(SubImage + size*2)));
-				
-            float ahk = ( - *(subImage - size - 1) + *(subImage - size + 1) + *(subImage + size + 1) - *(subImage + size - 1)) / 4;
-            float bhk = ( - *(subImage - size - 1) - *(subImage - size + 1) + *(subImage + size + 1) + *(subImage + size - 1)) / 4;
-            A += ahk*ahk;
-            B += bhk*bhk;
-            C += ahk * bhk;
-        }
-    }
-
-    float t1, t2, phit;
-    if (C > 0) {
-        t1 = 1;
-        t2 = (B - A) / (2 * C) - sqrt(pow((B - A) / (2 * C), 2) + 1);
-    } else if (C < 0) {
-        t1 = 1;
-        t2 = (B - A) / (2 * C) + sqrt(pow((B - A) / (2 * C), 2) + 1);
-    } else if (A <= B) {
-        t1 = 1;
-        t2 = 0;
-    } else {
-        t1 = 0;
-        t2 = 1;
-    }
-
-    if (t1 == 0) {
-        phit = PI / 2;
-    } else {
-        phit = atan(t2 / t1);
-    }
-
-    return phit;
-}
 VOID SetImage(
     Image* image,
     UINT8 widthSquare
@@ -129,32 +57,145 @@ VOID SetImage(
 //Normalization helper functions
 
 //----------------------To normal progress----------------------
-float GetM(Image *image) {
+float GetM(Image *image, int x, int y) 
+{
     UINT32 temp = 0;
-    
-    for (int j = 0; j < height; j++) 
+    int count = 0;
+    for (int j = x - 10; j < x + 10; j++) 
 	{
-        for (int i = 0; i < width; i++) 
+        for (int i = y - 10; i < y + 10; i++) 
 		{
             temp = temp + image->data[i][j];
+			count++;
         }
     }
     
-    return (float)temp / (width * height);
+    return (float)temp / (count);
 }
 
-float GetV(Image *image, float GetM_value) {
+float GetV(Image *image, float GetM_value, int x, int y) 
+{
     float temp = 0;
-    
-    for (int j = 0; j < height; j++) 
+    int count = 0;
+    for (int j = x - 5; j < x + 5 + 1; j++) 
 	{
-        for (int i = 0; i < width; i++) 
+        for (int i = y - 5; i < y + 5 +1; i++) 
 		{
+			count++;
             temp += (image->data[i][j] - GetM_value) * (image->data[i][j] - GetM_value);
         }
     }
     
-    return (float)temp / (width * height);
+    return (float)temp / (count);
+}
+
+INT8 Segmentation(Image *image)
+{
+	int NumOfBlock = 4;
+
+	float m[NumOfBlock][NumOfBlock];
+	float v[NumOfBlock][NumOfBlock];
+
+	int _count = 0;
+
+	for(int i = 0; i < NumOfBlock; i++)
+	{
+		for(int j = 0; j < NumOfBlock; j++)
+		{
+			int x = 14 + i * 20;
+			int y = 14 + j * 20;
+
+			m[i][j] = GetM(image,x, y);
+			v[i][j] = GetV(image,m[i][j],x,y);
+			if(m[i][j] > 175)
+			{
+			printf("M[%d][%d]: %f\n\n",i,j,m[i][j]);
+				_count++;
+			}
+		}
+	}
+	return (_count > 3 );
+
+	float G_m = 0;
+	float V_m = 0;
+	float G_f = 0;
+	float V_f = 0;
+	int countG_f = 0;
+	int countV_f = 0;
+	float G_b = 0;
+	float V_b = 0;
+	int countG_b = 0;
+	int countV_b = 0;
+
+	for(int i = 0; i < NumOfBlock; i++)
+	{
+		for(int j = 0; j < NumOfBlock; j++)
+		{
+			G_m += m[i][j];
+			V_m += v[i][j];
+		}
+	}
+
+	G_m = G_m/(NumOfBlock*NumOfBlock);
+	V_m = V_m/(NumOfBlock*NumOfBlock);
+
+	for(int i = 0; i < NumOfBlock; i++)
+	{
+		for(int j = 0; j < NumOfBlock; j++)
+		{
+			if(m[i][j] < G_m)
+			{
+				G_b += m[i][j];
+				countG_b++;
+			}
+			else if(m[i][j] > G_m)
+			{
+				G_f += m[i][j];
+				countG_f++;
+			}
+
+			if(v[i][j] < V_m)
+			{
+				V_b += v[i][j];
+				countV_b++;
+			}
+			else if(v[i][j] > V_m)
+			{
+				V_f += v[i][j];
+				countV_f++;
+			}
+		}
+	}
+
+	G_b = G_b / countG_b;
+	G_f = G_f / countG_f;
+	V_b = V_b / countV_b;
+	V_f = V_f / countV_f;
+
+	int threshold = 10;
+	int count = 0;
+	//printf("G_m: %f\nV_m: %f\nG_b: %f\nV_b: %f\n\n",G_m,V_m,G_b,V_b);
+	for (int i = 0; i < NumOfBlock; i++)
+	{
+		for (int j = 0; j < NumOfBlock; j++)
+		{
+			if ((m[i][j] <  G_b || m[i][j] > G_f))
+			{
+				count++;
+				//printf("M[%d][%d]: %f\nV[%d][%d]: %f\n\n",i,j,m[i][j],i,j,v[i][j]);
+
+			}
+			
+		}
+		
+	}
+	
+	return count;
+
+	if(count >= threshold){
+		return 1;
+	}
+	return 0;
 }
 
 VOID ToNornal(
@@ -187,7 +228,7 @@ VOID ToNornal(
     tempImage.Height = image->Height;
     tempImage.Width = image->Width;
 
-    for (int i = 1; i < image->Width - 1; i++) 
+    for (int i = 1; i < image->Width - 1; i++)
 	{
         for (int j = 1; j < image->Height - 1; j++) 
 		{
@@ -235,19 +276,21 @@ VOID Mask_Gabor(MaskFilter *Mask, UINT8 widthSquare,float filterDirect,float f,U
 {
 	float sinn = sin(filterDirect);
 	float coss = cos(filterDirect);
-	for(int x=0;x<2*widthSquare+1;x++){
+	for(int x=0;x<2*widthSquare+1;x++)
+	{
 		for(int y=0;y<2*widthSquare+1;y++)
 		{
 			float x1 = sinn*(x-widthSquare) + coss*(y-widthSquare);
 			float y1 = sinn*(y-widthSquare) - coss*(x-widthSquare);
-			Mask->mask[x][y] = exp(-0.5*(pow(x1,2)/pow(fi,2) + pow(y1,2)/pow(fi,2)))*cos(2*PI*f*x1);				
+			Mask->mask[x][y] = exp(-0.5*(pow(x1,2)/pow(fi,2) + pow(y1,2)/pow(fi,2)))*cos(2*PI*f*x1);
 		}
 		// Mask->width = widthSquare*2 + 1;
 	}
 		
 }
 
-VOID CalMaskFilter(MaskFilter *Mask){
+VOID CalMaskFilter(MaskFilter *Mask)
+{
 	
 	for(int i=0; i < MaskNumber; i++)
 	{
@@ -255,7 +298,8 @@ VOID CalMaskFilter(MaskFilter *Mask){
 	}
 }
 
-VOID ToFiltring_Gabor(Image *image, UINT16 widthSquare){
+VOID ToFiltring_Gabor(Image *image, UINT16 widthSquare)
+{
 	float pointValue = 0;
 	//GetClock("before GetMaskFilter");
 	MaskFilter Mask[MaskNumber];
@@ -317,8 +361,8 @@ VOID ToFiltring_Gaussin(Image *image, UINT16 widthSquare)
 	for(int x=widthSquare + 1; x < width - widthSquare  - 1; x++)
 	{
 		for(int y=widthSquare + 1; y < height - widthSquare - 1; y++)
-		{			
-			
+		
+		{
 			for(int i= - widthSquare ; i < widthSquare + 1; i++)
 			{
 				for(int j= - widthSquare; j < widthSquare +1; j++)
@@ -345,7 +389,6 @@ VOID ToFiltring_GaussinV2(Image *image, UINT16 widthSquare)
 	{
 		for(int y=widthSquare + 1; y < height - widthSquare - 1; y++)
 		{			
-			
 			for(int i= 0 ; i < 2*widthSquare + 1; i++)
 			{
 				for(int j= 0; j < 2*widthSquare +1; j++)
@@ -432,7 +475,7 @@ VOID ToBinary(
 //---------------------------------------------------------------
 //-----------------------To RidgeThin progress----------------------
 
-void RidgeThin(Image *image) 
+void RidgeThin(Image *image)
 {
     int i, j, p, q, r, s, count;
     int thinning = 1;
@@ -466,29 +509,15 @@ void RidgeThin(Image *image)
 }
 BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
 {
-	int p1 = (isDeleable[x-1][y-1]) ? 255 : image->data[x-1][y-1];
-	int p2 = (isDeleable[x  ][y-1]) ? 255 : image->data[x  ][y-1];
-	int p3 = (isDeleable[x+1][y-1]) ? 255 : image->data[x+1][y-1];
-	int p4 = (isDeleable[x-1][y  ]) ? 255 : image->data[x-1][y  ];
-	int p5 = (isDeleable[x+1][y  ]) ? 255 : image->data[x+1][y  ];
-	int p6 = (isDeleable[x-1][y+1]) ? 255 : image->data[x-1][y+1];
-	int p7 = (isDeleable[x  ][y+1]) ? 255 : image->data[x  ][y+1];
-	int p8 = (isDeleable[x+1][y+1]) ? 255 : image->data[x+1][y+1];
+	int _p1 = (isDeleable[x-1][y-1]) ? 0 : image->data[x-1][y-1];
+	int _p2 = (isDeleable[x  ][y-1]) ? 0 : image->data[x  ][y-1];
+	int _p3 = (isDeleable[x+1][y-1]) ? 0 : image->data[x+1][y-1];
+	int _p4 = (isDeleable[x-1][y  ]) ? 0 : image->data[x-1][y  ];
+	int _p5 = (isDeleable[x+1][y  ]) ? 0 : image->data[x+1][y  ];
+	int _p6 = (isDeleable[x-1][y+1]) ? 0 : image->data[x-1][y+1];
+	int _p7 = (isDeleable[x  ][y+1]) ? 0 : image->data[x  ][y+1];
+	int _p8 = (isDeleable[x+1][y+1]) ? 0 : image->data[x+1][y+1];
 
-	int p = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8;
-
-	if((p>= 255*3 && p<=255*6)&&(image->data[x][y]==0)&&
-		((image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x-1][y]==255)
-		&&(image->data[x][y+1]==255||image->data[x-1][y]==255||image->data[x][y-1]==255))
-		)
-		// ||(image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x][y-1]==255)
-		// &&(image->data[x+1][y]==255||image->data[x-1][y]==255||image->data[x][y-1]==255)
-		return true;
-	return false;
-}
-BOOLEAN IsDeleable(Image *image, int x,int y)
-{
-	// if((image->data[x-1][y]==255||image->data[x+1][y]==255||image->data[x][y-1]==255||image->data[x][y+1]==255)&&image->data[x][y]==0){
 	int p1 = image->data[x-1][y-1];
 	int p2 = image->data[x  ][y-1];
 	int p3 = image->data[x+1][y-1];
@@ -497,6 +526,29 @@ BOOLEAN IsDeleable(Image *image, int x,int y)
 	int p6 = image->data[x-1][y+1];
 	int p7 = image->data[x  ][y+1];
 	int p8 = image->data[x+1][y+1];
+
+	int p = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8;
+
+	if((p>= 255*3 && p<=255*6)&&(image->data[x][y]==0)&&
+		((_p5==255||_p7==255||_p4==255)
+		&&(_p7==255||_p4==255||_p2==255))
+		)
+		// ||(image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x][y-1]==255)
+		// &&(image->data[x+1][y]==255||image->data[x-1][y]==255||image->data[x][y-1]==255)
+		return true;
+	return false;
+}
+BOOLEAN IsDeleable(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
+{
+	// if((image->data[x-1][y]==255||image->data[x+1][y]==255||image->data[x][y-1]==255||image->data[x][y+1]==255)&&image->data[x][y]==0){
+	int p1 = (isDeleable[x-1][y-1]) ? 0 : image->data[x-1][y-1];
+	int p2 = (isDeleable[x  ][y-1]) ? 0 : image->data[x  ][y-1];
+	int p3 = (isDeleable[x+1][y-1]) ? 0 : image->data[x+1][y-1];
+	int p4 = (isDeleable[x-1][y  ]) ? 0 : image->data[x-1][y  ];
+	int p5 = (isDeleable[x+1][y  ]) ? 0 : image->data[x+1][y  ];
+	int p6 = (isDeleable[x-1][y+1]) ? 0 : image->data[x-1][y+1];
+	int p7 = (isDeleable[x  ][y+1]) ? 0 : image->data[x  ][y+1];
+	int p8 = (isDeleable[x+1][y+1]) ? 0 : image->data[x+1][y+1];
 
 		if((p1+p2+p3)==0&&(p6*p7*p8)>0) return true;
 	if((p1+p2+p4)==0&&(p5*p7*p8)>0) return true;
@@ -513,11 +565,11 @@ BOOLEAN IsDeleable(Image *image, int x,int y)
 VOID MakeBone(Image *image)
 {
 	BOOLEAN isBone = false;
-	UINT8 temp[MaxHeight][MaxWidth];
-	ZeroMem(temp,sizeof(temp));
 	while(!isBone)
 	// for(int count = 0; count < 20; count++)
 	{
+		UINT8 temp[MaxHeight][MaxWidth];
+		ZeroMem(temp,sizeof(temp));
 		isBone = true;
 		for(int j=1;j<height-1;j++)				
 		{
@@ -525,32 +577,104 @@ VOID MakeBone(Image *image)
 			{
 				if(IsBoder(image, i, j, temp))
 				{
-					if(IsDeleable(image, i, j))
+					if(IsDeleable(image, i, j,temp))
 					{
 						temp[i][j]=1;
+						image->data[i][j] = 255;
 						isBone = false;
 					}
 				}
 			}
 		}
-
-		for(int j=1;j<height-1;j++)				
-		{
-			for(int i=1;i<width-1;i++)	
-			{
-				if(temp[i][j])
-				{
-					image->data[i][j] = 255;
-				}
-			}
-		}
 	}
-
 }
+// BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
+// {
+// 	int p1 = (isDeleable[x-1][y-1]) ? 255 : image->data[x-1][y-1];
+// 	int p2 = (isDeleable[x  ][y-1]) ? 255 : image->data[x  ][y-1];
+// 	int p3 = (isDeleable[x+1][y-1]) ? 255 : image->data[x+1][y-1];
+// 	int p4 = (isDeleable[x-1][y  ]) ? 255 : image->data[x-1][y  ];
+// 	int p5 = (isDeleable[x+1][y  ]) ? 255 : image->data[x+1][y  ];
+// 	int p6 = (isDeleable[x-1][y+1]) ? 255 : image->data[x-1][y+1];
+// 	int p7 = (isDeleable[x  ][y+1]) ? 255 : image->data[x  ][y+1];
+// 	int p8 = (isDeleable[x+1][y+1]) ? 255 : image->data[x+1][y+1];
+
+// 	int p = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8;
+
+// 	if((p>= 255*3 && p<=255*6)&&(image->data[x][y]==0)&&
+// 		((image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x-1][y]==255)
+// 		&&(image->data[x][y+1]==255||image->data[x-1][y]==255||image->data[x][y-1]==255))
+// 		)
+// 		// ||(image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x][y-1]==255)
+// 		// &&(image->data[x+1][y]==255||image->data[x-1][y]==255||image->data[x][y-1]==255)
+// 		return true;
+// 	return false;
+// }
+// BOOLEAN IsDeleable(Image *image, int x,int y)
+// {
+// 	// if((image->data[x-1][y]==255||image->data[x+1][y]==255||image->data[x][y-1]==255||image->data[x][y+1]==255)&&image->data[x][y]==0){
+// 	int p1 = image->data[x-1][y-1];
+// 	int p2 = image->data[x  ][y-1];
+// 	int p3 = image->data[x+1][y-1];
+// 	int p4 = image->data[x-1][y  ];
+// 	int p5 = image->data[x+1][y  ];
+// 	int p6 = image->data[x-1][y+1];
+// 	int p7 = image->data[x  ][y+1];
+// 	int p8 = image->data[x+1][y+1];
+
+// 		if((p1+p2+p3)==0&&(p6*p7*p8)>0) return true;
+// 	if((p1+p2+p4)==0&&(p5*p7*p8)>0) return true;
+// 		if((p1+p4+p6)==0&&(p3*p5*p8)>0) return true;
+// 	if((p3+p2+p5)==0&&(p4*p7*p6)>0) return true;
+// 		if((p6+p7+p8)==0&&(p1*p2*p3)>0) return true;
+// 	if((p8+p5+p7)==0&&(p2*p4*p1)>0) return true;
+// 		if((p3+p5+p8)==0&&(p1*p4*p6)>0) return true;
+// 	if((p6+p4+p7)==0&&(p2*p5*p3)>0) return true;
+
+// 	return false;
+// 	// }
+// }
+// VOID MakeBone(Image *image)
+// {
+// 	BOOLEAN isBone = false;
+// 	while(!isBone)
+// 	// for(int count = 0; count < 20; count++)
+// 	{
+// 	UINT8 temp[MaxHeight][MaxWidth];
+// 	ZeroMem(temp,sizeof(temp));
+// 		isBone = true;
+// 		for(int j=1;j<height-1;j++)				
+// 		{
+// 			for(int i=1;i<width-1;i++)	
+// 			{
+// 				if(IsBoder(image, i, j, temp))
+// 				{
+// 					if(IsDeleable(image, i, j))
+// 					{
+// 						temp[i][j]=1;
+// 						isBone = false;
+// 					}
+// 				}
+// 			}
+// 		}
+
+// 		for(int j=1;j<height-1;j++)				
+// 		{
+// 			for(int i=1;i<width-1;i++)	
+// 			{
+// 				if(temp[i][j])
+// 				{
+// 					image->data[i][j] = 255;
+// 				}
+// 			}
+// 		}
+// 	}
+
+// }
 VOID ClearBone(Image *image)
 {
 	for(int y=1;y<height-1;y++)	
-	{	
+	{
 		for(int x=1;x<width-1;x++)	
 		{
 			if(image->data[x][y]==0)
@@ -628,7 +752,6 @@ VOID GetMinutiae
 	UINT8 bottomPadding
 )
 {
-	
 	int cnt = 0;
 	for(int x=leftPading;x<width-rightPadding;x++)
 	{
@@ -706,7 +829,7 @@ VOID GetMinutiae
 		for(int j=i+1; j <minus->Count;j++)
 		{
 			UINT32 Distance = (UINT32)(sqrt(pow(minus->minus[i].x-minus->minus[j].x,2) + pow(minus->minus[i].y-minus->minus[j].y,2)));
-			if(Distance <= 2)
+			if(Distance <= 3)
 			{
 				//minus1.RemoveAt(j);
 				for(int b = j; b < minus->Count ; b++)//dich chuyen mang
@@ -734,7 +857,7 @@ VOID GetMinutiae
 					break;
 				}	
 			}
-			else if((Distance > 2 && Distance < 5 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1))
+			else if((Distance > 3 && Distance < 6 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1))
 			{
 				//minus1.RemoveAt(j);
 				for(int b = j; b < minus->Count ; b++)//dich chuyen mang
@@ -762,7 +885,7 @@ VOID GetMinutiae
 					break;
 				}	
 			}
-			else if((Distance > 2 && Distance<6 && minus->minus[i].Type != minus->minus[j].Type) || (Distance > 2 && Distance<6 && minus->minus[i].Type == minus->minus[j].Type))
+			else if((Distance > 3 && Distance < 6 && minus->minus[i].Type != minus->minus[j].Type) || (Distance > 3 && Distance < 6 && minus->minus[i].Type == minus->minus[j].Type))
 			{
 				
 				//minus1.RemoveAt(j);
@@ -848,6 +971,6 @@ GroupDataSpecialPoint* GetTriangle(SpecialPoint *ListSpecialPoint, UINT16* NumTr
             }
         }
     }
-	*NumTriangle = NumElement;     
+	*NumTriangle = NumElement;
 	return ListTriangle;
 }

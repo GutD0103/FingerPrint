@@ -25,7 +25,7 @@
 
 
 /// @brief The triangle is formed by the three vertices I, J, and K. 
-///        This function is used for check if the sides of the triangle follow a clockwise order.
+///        This function is used for check if the sides of the triangle follow the clockwise order.
 
 INT8  CheckEdgeClockwise(SpecialPoint *minus ,UINT8 i ,UINT8 j ,UINT8 k){
     int BA_x = minus->minus[i].x - minus->minus[j].x;
@@ -34,6 +34,7 @@ INT8  CheckEdgeClockwise(SpecialPoint *minus ,UINT8 i ,UINT8 j ,UINT8 k){
     int BC_y = minus->minus[k].y - minus->minus[j].y;
 
     float cross_product = BA_x * BC_y - BA_y * BC_x;
+
     if(cross_product > 0)
     {
         return 1;
@@ -66,8 +67,10 @@ UINT8 CompairMinutiae(
 
     UINT8 mangIJK[NumTriangle1*3];
     UINT8 mangIJK2[NumTriangle2*3];
-    for(int i = 0; i < NumTriangle1; i++ ){
-        for(int j = 0; j< NumTriangle2; j++){
+    for(int i = 0; i < NumTriangle1; i++ )
+    {
+        for(int j = 0; j< NumTriangle2; j++)
+        {
             counter+=1;
             if(group2[j].status == 0 )
             {   
@@ -109,62 +112,68 @@ UINT8 CompairMinutiae(
                  && (minus1->minus[j1].Type == minus2->minus[j2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[k2].Type)
                  && (SubBord1AndBord1 <= _distanceLimit) && (SubBord2AndBord2 <= _distanceLimit) && (SubBord3AndBord3 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,i2,j2,k2))
                     {
                         flag = 1;
                     }
-                } else
-                if(
+                } 
+                else if(
                     (minus1->minus[i1].Type == minus2->minus[j2].Type)
                  && (minus1->minus[j1].Type == minus2->minus[i2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[k2].Type)
                  && (SubBord1AndBord1 <= _distanceLimit) && (SubBord2AndBord3 <= _distanceLimit) && (SubBord3AndBord2 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,j2,i2,k2))
                     {
                         flag = 1;
                     }
-                } else 
-                if(
+                } 
+                else if(
                     (minus1->minus[i1].Type == minus2->minus[k2].Type)
                  && (minus1->minus[j1].Type == minus2->minus[i2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[j2].Type)
                  && (SubBord1AndBord2 <= _distanceLimit) && (SubBord2AndBord3 <= _distanceLimit) && (SubBord3AndBord1 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,k2,i2,j2))
                     {
                         flag = 1;
                     }
-                } else
-                if(
+                } 
+                else if(
                     (minus1->minus[i1].Type == minus2->minus[i2].Type)
                  && (minus1->minus[j1].Type == minus2->minus[k2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[j2].Type)
                  && (SubBord1AndBord2 <= _distanceLimit) && (SubBord2AndBord1 <= _distanceLimit) && (SubBord3AndBord3 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,i2,k2,j2))
                     {
                         flag = 1;
                     }
-                } else
-                if(
+                } 
+                else if(
                     (minus1->minus[i1].Type == minus2->minus[k2].Type)
                  && (minus1->minus[j1].Type == minus2->minus[j2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[i2].Type)
                  && (SubBord1AndBord3 <= _distanceLimit) && (SubBord2AndBord2 <= _distanceLimit) && (SubBord3AndBord1 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,k2,j2,i2))
                     {
                         flag = 1;
                     }
-                } else
-                if(
+                } 
+                else if(
                     (minus1->minus[i1].Type == minus2->minus[j2].Type)
                  && (minus1->minus[j1].Type == minus2->minus[k2].Type)
                  && (minus1->minus[k1].Type == minus2->minus[i2].Type)
                  && (SubBord1AndBord3 <= _distanceLimit) && (SubBord2AndBord1 <= _distanceLimit) && (SubBord3AndBord2 <= _distanceLimit)
-                ){
+                )
+                {
                     if(CheckEdgeClockwise(minus1,i1,j1,k1) == CheckEdgeClockwise(minus2,j2,k2,i2))
                     {
                         flag = 1;
@@ -172,7 +181,8 @@ UINT8 CompairMinutiae(
                 }
 
 
-                if(flag == 1){
+                if(flag == 1)
+                {
                     mangIJK[result*3] = i1;
                     mangIJK[result*3 + 1] = j1;
                     mangIJK[result*3 + 2] = k1;
@@ -186,6 +196,7 @@ UINT8 CompairMinutiae(
                     // printf("%d-----------%d--------%d\n",i1,j1,k1);
                     // printf("%d-----------%d--------%d\n",i2,j2,k2);
                     break;
+                    
                 }
             }
         }
@@ -228,12 +239,9 @@ UINT8 CompairMinutiae(
             sodiemtrung2 +=1;
         }
     }
-     UINT8 OUTPUT = (sodiemtrung > sodiemtrung2)?sodiemtrung2:sodiemtrung;
+    UINT8 OUTPUT = (sodiemtrung > sodiemtrung2)?sodiemtrung2:sodiemtrung;
 
     //  printf("So tam giac trung nhau la: %d\n", result);
     //  printf("So diem trung nhau theo phuong phap 2 la: %d\n", OUTPUT);
-     return OUTPUT;
+    return OUTPUT;
 }
-
-
-

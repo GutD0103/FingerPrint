@@ -8,10 +8,10 @@
 #define MaxWidth                88
 #define ImageIsSquare   
 #define MaskNumber              32
-#define MaxSpecialPoint         100
+#define MaxSpecialPoint         500
 #define PI                      3.141592653589793
 
-#define MaxTriangle             50
+#define MaxTriangle             5000
 
 //image process 
 #define m_para                  50
@@ -133,20 +133,4 @@ UINT8 CompairMinutiae(
     SpecialPoint *minus2
 );
 
-//---------------------------------------------------------------------------------
-typedef struct {
-    float x;              // Tọa độ x
-    float y;              // Tọa độ y
-    float scale;          // Tỷ lệ
-    float orientation;    // Hướng
-    float reliability;    // Mức độ tin cậy
-
-    // Mô tả đặc trưng
-    float descriptor[128];  // Mô tả đặc trưng (vector 128 chiều)
-} KeypointofSIFT;
-
-typedef struct {
-    UINT8  Count;
-    KeypointofSIFT keypoint[MaxSpecialPoint];
-
-} ListKeypointofSIFT;
+INT8 Segmentation(Image *image);

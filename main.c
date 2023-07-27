@@ -194,17 +194,17 @@ VOID t_GetErrorImage(int fileCount,char* SsourceFiles2[150]){
         ToBinary(Image1,threshold_para,WidthSquare);          
         ToBoneImage(Image1);        
         GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);                      
-        if(minus1->Count > 6){
-            //remove(sourceFile3);
-            //printf("more 7: %s\n",sourceFile3);
+        if(minus1->Count > 7){
+            // remove(sourceFile3);
+            // printf("more 7: %s\n",sourceFile3);
             more7++;
         }
         else if(minus1->Count < 3){
-            //remove(sourceFile3);
-            //printf("less 3: %s\n",sourceFile3);
+            // remove(sourceFile3);
+            // printf("less 3: %s\n",sourceFile3);
             less3++;
         }
-        if(minus1->Count >= 3 && minus1->Count <= 6){
+        if(minus1->Count >= 3 && minus1->Count <= 7){
             all++;
            // printf("OKE: %s\n",sourceFile3);
 
@@ -213,7 +213,7 @@ VOID t_GetErrorImage(int fileCount,char* SsourceFiles2[150]){
         free(Image1);
 
     }
-    printf("LESS THAN 3: %d-%f\nMORE THAN 6: %d-%f\nError: %d\nALL: %d\n\n",less3,(float)less3/(less3+more7),more7,(float)more7/(less3+more7),less3+more7,all);
+    printf("LESS THAN 3: %d-%f\nMORE THAN 7: %d-%f\nError: %d\nALL: %d\n\n",less3,(float)less3/(less3+more7),more7,(float)more7/(less3+more7),less3+more7,all);
 }
 INT8 isAlready(SpecialPoint *list[10],int count, SpecialPoint *minus){
     
@@ -271,7 +271,7 @@ VOID GetTempalte(int fileCount,char* SsourceFiles2[150],char* template[5]){
         ToBinary(Image1,threshold_para,WidthSquare);          
         ToBoneImage(Image1);        
         GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);                      
-        if(minus1->Count <= 6 && minus1->Count >= 3){
+        if(minus1->Count <= 7 && minus1->Count >= 3){
             //template[fileCount3++] = sourceFile3;
             if(!isAlready(list,fileCount3,minus1)){
                 template[fileCount3] = sourceFile3;
@@ -285,13 +285,7 @@ VOID GetTempalte(int fileCount,char* SsourceFiles2[150],char* template[5]){
 }
 int main(){
 for(int o = 1 ; o <=4 ; o++){
-    if(o == 2){
-        continue;
-    }
- for(int p = 1 ; p <=4 ; p++){   
-    if(p == 2){
-        continue;
-    }
+  for(int p = 1 ; p <=1 ; p++){   
     int soanhtrung = 0;
 
     const int MAX_FILES = 150; // Số lượng tệp tin tối đa
@@ -342,7 +336,7 @@ GetTempalte(fileCount2,SsourceFiles2,template);
 // }
 
 int all = 0;
- //\-------------------------------------------------------------------------------------------------------/
+//\-------------------------------------------------------------------------------------------------------/
 for (int i = 0; i < fileCount; i++) {
     for(int j = 0; j < fileCount3; j++){
             
@@ -351,7 +345,7 @@ for (int i = 0; i < fileCount; i++) {
             unsigned char* imageData1;
             unsigned char* imageData2;
             // if(i==0 && j ==0){
-                //printf("%s------------%s\n",sourceFile1,sourceFile2);
+                // printf("%s------------%s\n",sourceFile1,sourceFile2);
             // }
             Bitmap bmp1 = loadBitmapFromFile(sourceFile1, &imageData1);
             Bitmap bmp2 = loadBitmapFromFile(sourceFile2, &imageData2);
@@ -387,7 +381,6 @@ for (int i = 0; i < fileCount; i++) {
 
         Image *Image1 = AllocatePool(sizeof(Image));
         Image *Image2 = AllocatePool(sizeof(Image));
-        
         ZeroMem(Image1,sizeof(Image));
         ZeroMem(Image2,sizeof(Image));
 
@@ -403,7 +396,10 @@ for (int i = 0; i < fileCount; i++) {
         SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
         SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
 
-        CopyMem(Image1->data, New_009, sizeof(New_009));                
+        CopyMem(Image1->data, New_009, sizeof(New_009));      
+        if(Segmentation(Image1)){
+            printf("%s-%d\n",sourceFile1,Segmentation(Image1));
+        }          
         ToNornal(Image1, m_para,v_para);     
         SetImage(Image1, WidthSquare);
         ToFiltring_Gaussin(Image1, WidthSquare); 
@@ -411,9 +407,10 @@ for (int i = 0; i < fileCount; i++) {
         ToBinary(Image1,threshold_para,WidthSquare);          
         ToBoneImage(Image1);        
         GetMinutiae(minus1, Image1,left1,top1,right1,bottom1);
-        GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1);                            
-        draw(minus1,Image1);
-        CopyMem(Image2->data, New_005, sizeof(New_005));                
+        GroupDataSpecialPoint * listTriangle1 = GetTriangle(minus1, &NumTriangle1);   
+
+        CopyMem(Image2->data, New_005, sizeof(New_005));  _resetstkoflw();    
+        //printf("%s: %d\n",sourceFile2,Segmentation(Image2));
         ToNornal(Image2, m_para,v_para);                               
         SetImage(Image2, WidthSquare);
         ToFiltring_Gaussin(Image2, WidthSquare);
@@ -422,7 +419,6 @@ for (int i = 0; i < fileCount; i++) {
         ToBoneImage(Image2);
         GetMinutiae(minus2, Image2,left2,top2,right2,bottom2);
         GroupDataSpecialPoint * listTriangle2 = GetTriangle(minus2, &NumTriangle2);                           
-        draw(minus2,Image2);
         //UINT8 result = CompairMinutiae(minus1, minus2);
 
         if(minus1->Count < 3 || minus1->Count > 6 || minus2->Count < 3 || minus2->Count > 6 || abs(minus1->Count-minus2->Count) > 2){
@@ -436,9 +432,9 @@ for (int i = 0; i < fileCount; i++) {
             int minpoint = minus1->Count < minus2->Count ? minus1->Count:minus2->Count;
             float ketqua = (result1/minpoint)*100;
             if(ketqua >= 70){
-                // if(strcmp(prefix2,prefix)!=0){
-                //     printf("%s------------%s\n",sourceFile1,sourceFile2);
-                // }
+                if(strcmp(prefix2,prefix)!=0){
+                    printf("%s------------%s\n",sourceFile1,sourceFile2);
+                }
                 soanhtrung+=1;
                 break;
             }
@@ -462,7 +458,7 @@ for (int i = 0; i < fileCount; i++) {
     }
     soanhtrung=0;
     }
-   printf("%s-%s: %d\n",prefix,prefix2,all);
+   //printf("%s-%s: %d\n",prefix,prefix2,all);
    all = 0;
 }
 }
