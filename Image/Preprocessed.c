@@ -509,15 +509,6 @@ void RidgeThin(Image *image)
 }
 BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
 {
-	int _p1 = (isDeleable[x-1][y-1]) ? 0 : image->data[x-1][y-1];
-	int _p2 = (isDeleable[x  ][y-1]) ? 0 : image->data[x  ][y-1];
-	int _p3 = (isDeleable[x+1][y-1]) ? 0 : image->data[x+1][y-1];
-	int _p4 = (isDeleable[x-1][y  ]) ? 0 : image->data[x-1][y  ];
-	int _p5 = (isDeleable[x+1][y  ]) ? 0 : image->data[x+1][y  ];
-	int _p6 = (isDeleable[x-1][y+1]) ? 0 : image->data[x-1][y+1];
-	int _p7 = (isDeleable[x  ][y+1]) ? 0 : image->data[x  ][y+1];
-	int _p8 = (isDeleable[x+1][y+1]) ? 0 : image->data[x+1][y+1];
-
 	int p1 = image->data[x-1][y-1];
 	int p2 = image->data[x  ][y-1];
 	int p3 = image->data[x+1][y-1];
@@ -526,6 +517,12 @@ BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
 	int p6 = image->data[x-1][y+1];
 	int p7 = image->data[x  ][y+1];
 	int p8 = image->data[x+1][y+1];
+
+	int _p2 = (isDeleable[x  ][y-1]) ? 0 : p2;
+	int _p4 = (isDeleable[x-1][y  ]) ? 0 : p4;
+	int _p5 = (isDeleable[x+1][y  ]) ? 0 : p5;
+	int _p7 = (isDeleable[x  ][y+1]) ? 0 : p7;
+
 
 	int p = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8;
 
@@ -588,6 +585,7 @@ VOID MakeBone(Image *image)
 		}
 	}
 }
+
 // BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
 // {
 // 	int p1 = (isDeleable[x-1][y-1]) ? 255 : image->data[x-1][y-1];
