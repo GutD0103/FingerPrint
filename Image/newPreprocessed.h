@@ -1,3 +1,6 @@
+#ifndef INC_NEW_PREPROCESSED_H_
+#define INC_NEW_PREPROCESSED_H_
+
 #include "Image.h"
 #include "Memory.h"
 #include "newMath.h"
@@ -20,3 +23,5 @@ INT8        StopCriteria(Image *image, Point point, float phin,SpecialPoint *Lis
 Point       localMax(Image *image, Point point, float direction);
 Point       ridgeNearest(Image *image, Point point); 
 float       TangentDir(Image *image, Point point);
+
+#endif /* INC_NEW_PREPROCESSED_H_ */

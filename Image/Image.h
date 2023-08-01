@@ -1,3 +1,7 @@
+#ifndef INC_IMAGE_H_
+#define INC_IMAGE_H_
+
+
 #include <stdio.h>
 #include <math.h>
 #include "../BaseLib/Include/BaseLib.h"
@@ -134,3 +138,7 @@ UINT8 CompairMinutiae(
 );
 
 INT8 Segmentation(Image *image);
+
+
+
+#endif /* INC_IMAGE_H_ */
