@@ -10,7 +10,7 @@
 
 int main()
 {
-    test_file("u003/fp001/u000_fp001_000.bmp","u003/fp001/u000_fp001_000.bmp");
-    test_folder("u003",4);
+    // test_file("u002/fp009/u000_fp009_060.bmp","u002/fp003/u000_fp003_002.bmp");
+    test_folder("u004",5);
     return 0;
 }

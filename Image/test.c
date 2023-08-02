@@ -375,9 +375,13 @@ int test_file(char *sourceFile1, char *sourceFile2)
     CopyMem(Image1->data, New_009, sizeof(New_009));
     CopyMem(Image2->data, New_005, sizeof(New_005));
 
+    printf("%s: %f\n",sourceFile1,Segmentation(Image1));
+    
+    printf("%s: %f\n",sourceFile2,Segmentation(Image2));
+
     ToNornal(Image1, m_para, v_para);
     SetImage(Image1, WidthSquare);
-    saveImageDataToTxt(Image1, "output.txt");
+                                                            saveImageDataToTxt(Image1, "output.txt");
     ToFiltring_Gaussin(Image1, WidthSquare);
     ToFiltring_Gabor(Image1, WidthSquare);
     ToBinary(Image1, threshold_para, WidthSquare);
@@ -385,8 +389,8 @@ int test_file(char *sourceFile1, char *sourceFile2)
     ToBoneImage(Image1);
     // drawDirect(Image1);
     GetMinutiae(minus1, Image1, left1, top1, right1, bottom1);
-    saveImageDataToTxt(Image1, "output1.txt");
     draw(minus1, Image1);
+                                                            saveImageDataToTxt(Image1, "output1.txt");
     // DRAW_TOBONE(temp,Image1);
     GroupDataSpecialPoint *listTriangle1 = GetTriangle(minus1, &NumTriangle1);
     if (!listTriangle1)
@@ -394,7 +398,7 @@ int test_file(char *sourceFile1, char *sourceFile2)
     }
 
     ToNornal(Image2, m_para, v_para);
-    saveImageDataToTxt(Image2, "output2.txt");
+                                                            saveImageDataToTxt(Image2, "output2.txt");
     SetImage(Image2, WidthSquare);
     ToFiltring_Gaussin(Image2, WidthSquare);
     ToFiltring_Gabor(Image2, WidthSquare);
@@ -402,7 +406,7 @@ int test_file(char *sourceFile1, char *sourceFile2)
     ToBoneImage(Image2);
     GetMinutiae(minus2, Image2, left2, top2, right2, bottom2);
     draw(minus2, Image2);
-    saveImageDataToTxt(Image2, "output3.txt");
+                                                            saveImageDataToTxt(Image2, "output3.txt");
     // drawDirect(Image2);
     GroupDataSpecialPoint *listTriangle2 = GetTriangle(minus2, &NumTriangle2);
     if (!listTriangle2)
@@ -554,6 +558,10 @@ int test_folder(char *sourceFolder, int num_of_folders)
                     SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
 
                     CopyMem(Image1->data, New_009, sizeof(New_009));
+                    if(Segmentation(Image1)){
+                        printf("%s: %f\n",sourceFile1,Segmentation(Image1));
+                    }
+                    continue;
                     ToNornal(Image1, m_para, v_para);
                     SetImage(Image1, WidthSquare);
                     ToFiltring_Gaussin(Image1, WidthSquare);

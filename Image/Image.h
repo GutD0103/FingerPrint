@@ -137,7 +137,7 @@ UINT8 CompairMinutiae(
     SpecialPoint *minus2
 );
 
-INT8 Segmentation(Image *image);
+float Segmentation(Image *image);
 
 
 
