@@ -3,6 +3,7 @@
         "baselib.h": "c",
         "memory.h": "c",
         "newpreprocessed.h": "c",
-        "test.h": "c"
+        "test.h": "c",
+        "stdlib.h": "c"
     }
 }

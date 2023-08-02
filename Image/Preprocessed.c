@@ -512,7 +512,7 @@ float Segmentation(Image *image)
 			}
 		}
 	}
-	return (_count > 5.5);
+	return (_count > 4.5);
 
 	float G_m = 0;
 	float V_m = 0;

@@ -453,7 +453,7 @@ int test_folder(char *sourceFolder, int num_of_folders)
             int start = 0;
             int end = 149;
             char prefix[] = "uXXX/fpXXX/uXXX_fpXXX_";
-            sprintf(prefix, "%s%s%02d%s%02d%s", sourceFolder, "/fp0", o, "/u000_fp0", o, "_");
+            sprintf(prefix, "%s%s%s%02d%s%02d%s", "anh/",sourceFolder, "/fp0", o, "/u000_fp0", o, "_");
             const char *sourceFile1;
             char extension[] = ".bmp";
 
@@ -462,7 +462,7 @@ int test_folder(char *sourceFolder, int num_of_folders)
             int start2 = 0;
             int end2 = 149;
             char prefix2[] = "uXXX/fpXXX/uXXX_fpXXX_";
-            sprintf(prefix2, "%s%s%02d%s%02d%s", sourceFolder, "/fp0", p, "/u000_fp0", p, "_");
+            sprintf(prefix2, "%s%s%s%02d%s%02d%s", "anh/", sourceFolder, "/fp0", p, "/u000_fp0", p, "_");
             const char *sourceFile2;
             char extension2[] = ".bmp";
 
@@ -626,6 +626,86 @@ int test_folder(char *sourceFolder, int num_of_folders)
             printf("%s-%s: %d\n", prefix, prefix2, all);
             all = 0;
         }
+    }
+    return 1;
+}
+
+int test_segmentation(char* sourceFolder, int num_of_folders){
+     for (int o = 1; o <= num_of_folders; o++)
+    {
+
+            const int MAX_FILES = 150; // Số lượng tệp tin tối đa
+            const char *SsourceFiles[MAX_FILES];
+            int start = 0;
+            int end = 149;
+            char prefix[] = "uXXX/fpXXX/uXXX_fpXXX_";
+            sprintf(prefix, "%s%s%s%02d%s%02d%s", "anh/",sourceFolder, "/fp0", o, "/u000_fp0", o, "_");
+            const char *sourceFile1;
+            char extension[] = ".bmp";
+
+
+
+            int fileCount = 0;
+
+
+            for (int i = start; i <= end; i++)
+            {
+                char filename[50];
+                sprintf(filename, "%s%03d%s", prefix, i, extension);
+                SsourceFiles[fileCount] = strdup(filename);
+                fileCount++;
+            }
+
+  
+
+
+            int all = 0;
+            for (int i = 0; i < fileCount; i++)
+            {
+ 
+
+                    const char *sourceFile1 = SsourceFiles[i];
+                    unsigned char *imageData1;
+
+                    // if(i==0 && j ==0){
+                    // printf("%s------------%s\n",sourceFile1,sourceFile2);
+                    // }
+                    Bitmap bmp1 = loadBitmapFromFile(sourceFile1, &imageData1);
+
+                    if (bmp1.height == 0)
+                    {
+                        continue;
+                    }
+ 
+
+                    int width = bmp1.width;
+                    int height = bmp1.height;
+                    unsigned char New_009[width][height];
+
+                    // Copy imageData1 to New_009
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            New_009[x][y] = imageData1[y * width + x];
+                        }
+                    }
+
+                    //---------------------------------------------------------------------
+                    Image *Image1 = AllocatePool(sizeof(Image));
+
+                    ZeroMem(Image1, sizeof(Image));
+
+                    Image1->Height = MaxHeight;
+                    Image1->Width = MaxWidth;
+
+                    CopyMem(Image1->data, New_009, sizeof(New_009));
+                    if(Segmentation(Image1)){
+                        printf("%s: %f\n",sourceFile1,Segmentation(Image1));
+                    }
+            }
+            //\-------------------------------------------------------------------------------------------------------/
+            printf("-------------------------------------------------\n");
     }
     return 1;
 }

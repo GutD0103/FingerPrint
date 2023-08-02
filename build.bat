@@ -5,4 +5,4 @@ if EXIST "main.exe" (
 
 gcc main.c BaseLib\src\Memory.c Image\Preprocessed.c Image\CompareMinutiae.c Image\newMath.c Image\test.c -o main
 .\main
-python -u "showPicture.py"
+@REM python -u "showPicture.py"

@@ -11,6 +11,7 @@
 int main()
 {
     // test_file("u002/fp009/u000_fp009_060.bmp","u002/fp003/u000_fp003_002.bmp");
-    test_folder("u004",5);
+    // test_folder("u002",10);
+    test_segmentation("u002",10);
     return 0;
 }
