@@ -258,13 +258,12 @@ INT8 isAlready(SpecialPoint *list[10], int count, SpecialPoint *minus)
     }
     return 0;
 }
-VOID GetTempalte(int fileCount, char *SsourceFiles2[150], char *template[5])
+VOID GetTempalte(int fileCount, char *SsourceFiles2[150], char *template[5], int *fileCount3)
 {
-    int fileCount3 = 0;
     SpecialPoint *list[10];
     for (int i = 0; i < fileCount; i++)
     {
-        if (fileCount3 >= 5)
+        if (*fileCount3 >= 10)
         {
             return;
         }
@@ -294,6 +293,9 @@ VOID GetTempalte(int fileCount, char *SsourceFiles2[150], char *template[5])
         SpecialPoint *minus1 = AllocatePool(sizeof(SpecialPoint));
 
         CopyMem(Image1->data, New_009, sizeof(New_009));
+        // if(Segmentation(Image1)){
+        //     continue;
+        // }
         ToNornal(Image1, m_para, v_para);
         SetImage(Image1, WidthSquare);
         ToFiltring_Gaussin(Image1, WidthSquare);
@@ -304,11 +306,11 @@ VOID GetTempalte(int fileCount, char *SsourceFiles2[150], char *template[5])
         if (minus1->Count <= 7 && minus1->Count >= 3)
         {
             // template[fileCount3++] = sourceFile3;
-            if (!isAlready(list, fileCount3, minus1))
+            if (!isAlready(list, (*fileCount3), minus1))
             {
-                template[fileCount3] = sourceFile3;
-                list[fileCount3] = minus1;
-                fileCount3++;
+                template[(*fileCount3)] = sourceFile3;
+                list[(*fileCount3)] = minus1;
+                (*fileCount3)++;
             }
         }
         free(Image1);
@@ -415,7 +417,7 @@ int test_file(char *sourceFile1, char *sourceFile2)
     }
 
     // UINT8 result = CompairMinutiae(minus1, minus2);
-    if (minus1->Count < 3 || minus2->Count < 3 || minus1->Count > 6 || minus2->Count > 6)
+    if (minus1->Count < 3 || minus2->Count < 3 || minus1->Count > 7 || minus2->Count > 7)
     {
 
         printf("Van tay khong du du lieu de so sanh");
@@ -453,7 +455,7 @@ int test_folder(char *sourceFolder, int num_of_folders)
             int start = 0;
             int end = 149;
             char prefix[] = "uXXX/fpXXX/uXXX_fpXXX_";
-            sprintf(prefix, "%s%s%s%02d%s%02d%s", "anh/",sourceFolder, "/fp0", o, "/u000_fp0", o, "_");
+            sprintf(prefix, "%s%s%s%02d%s%02d%s", "goc/",sourceFolder, "/fp0", o, "/u000_fp0", o, "_");
             const char *sourceFile1;
             char extension[] = ".bmp";
 
@@ -462,14 +464,14 @@ int test_folder(char *sourceFolder, int num_of_folders)
             int start2 = 0;
             int end2 = 149;
             char prefix2[] = "uXXX/fpXXX/uXXX_fpXXX_";
-            sprintf(prefix2, "%s%s%s%02d%s%02d%s", "anh/", sourceFolder, "/fp0", p, "/u000_fp0", p, "_");
+            sprintf(prefix2, "%s%s%s%02d%s%02d%s", "goc/", sourceFolder, "/fp0", p, "/u000_fp0", p, "_");
             const char *sourceFile2;
             char extension2[] = ".bmp";
 
             // ...
-            const int MAX_FILES3 = 5; // Số lượng tệp tin tối đa
+            const int MAX_FILES3 = 10; // Số lượng tệp tin tối đa
             char *template[MAX_FILES3];
-            int fileCount3 = MAX_FILES3;
+            int fileCount3 = 0;
 
             int fileCount = 0;
             int fileCount2 = 0;
@@ -490,7 +492,8 @@ int test_folder(char *sourceFolder, int num_of_folders)
                 fileCount2++;
             }
             // GetErrorImage(fileCount2,SsourceFiles2);
-            GetTempalte(fileCount2, SsourceFiles2, template);
+            // continue;
+            GetTempalte(fileCount2, SsourceFiles2, template, &fileCount3);
             // printf("%s\n",template[9]);
             // for(int i = 0; i< 10; i++){
             //     printf("%s\n",template[i]);
@@ -558,10 +561,9 @@ int test_folder(char *sourceFolder, int num_of_folders)
                     SpecialPoint *minus2 = AllocatePool(sizeof(SpecialPoint));
 
                     CopyMem(Image1->data, New_009, sizeof(New_009));
-                    if(Segmentation(Image1)){
-                        printf("%s: %f\n",sourceFile1,Segmentation(Image1));
-                    }
-                    continue;
+                    // if(Segmentation(Image1)){
+                    //     continue;
+                    // }
                     ToNornal(Image1, m_para, v_para);
                     SetImage(Image1, WidthSquare);
                     ToFiltring_Gaussin(Image1, WidthSquare);
@@ -572,6 +574,9 @@ int test_folder(char *sourceFolder, int num_of_folders)
                     GroupDataSpecialPoint *listTriangle1 = GetTriangle(minus1, &NumTriangle1);
 
                     CopyMem(Image2->data, New_005, sizeof(New_005));
+                    // if(Segmentation(Image2)){
+                    //     continue;
+                    // }
                     ToNornal(Image2, m_para, v_para);
                     SetImage(Image2, WidthSquare);
                     ToFiltring_Gaussin(Image2, WidthSquare);
@@ -593,7 +598,7 @@ int test_folder(char *sourceFolder, int num_of_folders)
                         float result1 = CompairMinutiae(listTriangle1, listTriangle2, NumTriangle1, NumTriangle2, minus1, minus2);
                         int minpoint = minus1->Count < minus2->Count ? minus1->Count : minus2->Count;
                         float ketqua = (result1 / minpoint) * 100;
-                        if (ketqua >= 70)
+                        if (ketqua >= 76)
                         {
                             if (strcmp(prefix2, prefix) != 0)
                             {

@@ -358,40 +358,7 @@ const float mask_gabor[MaskNumber][2 * WidthSquare + 1][2 * WidthSquare + 1] =
 		 {-0.260641425848007, -0.455074042081833, -0.287795662879944, 0.188046649098396, 0.569358050823212, 0.503810644149780, 0.072658643126488, -0.314451247453690, -0.366714835166931},
 	 }};
 
-float GetDirect(
-	Image *image,
-	UINT8 widthSquare,
-	UINT8 i,
-	UINT8 j)
-{
-	int Ax = 0, Ay = 0, Axy = 0;
-	int Bx = 0, By = 0;
-	int size = MaxWidth;
-	int startX = i - widthSquare;
-	int endX = i + widthSquare - 1;
-	int startY = j - widthSquare;
-	int endY = j + widthSquare - 1;
 
-	for (int x = startX; x < endX; x++)
-	{
-		for (int y = startY; y < endY; y++)
-		{
-			UINT8 *SubImage = &(image->data[x][y]);
-			// Bx = ((data[i + 2][j] + 2 * data[i + 2][j + 1] + data[i + 2][j + 2] - data[i][j] - 2 * data[i][j + 1] - data[i][j + 2]));
-			// By = ((data[i][j + 2] + 2 * data[i + 1][j + 2] + data[i + 2][j + 2] - data[i][j] - 2 * data[i + 1][j] - data[i + 2][j]));
-
-			Bx = ((*(SubImage + size * 2) + 2 * *(SubImage + size * 2 + 1) + *(SubImage + size * 2 + 2) - *SubImage - 2 * *(SubImage + 1) - *(SubImage + 2)));
-			By = ((*(SubImage + 2) + 2 * *(SubImage + size + 2) + *(SubImage + size * 2 + 2) - *SubImage - 2 * *(SubImage + size) - *(SubImage + size * 2)));
-
-			Ax += Bx * Bx;
-			Ay += By * By;
-			Axy += Bx * By;
-		}
-	}
-
-	float direction = PI / 2 - 0.5 * atan2_approximation2(2 * Axy, Ax - Ay);
-	return direction;
-}
 VOID SetImage(
 	Image *image,
 	UINT8 widthSquare)
@@ -447,7 +414,7 @@ VOID SetImage(
 
 // Normalization helper functions
 
-//----------------------To normal progress----------------------
+//----------------------Segmentation progress----------------------
 float GetM(Image *image, int x, int y)
 {
 	UINT32 temp = 0;
@@ -485,7 +452,6 @@ float Segmentation(Image *image)
 	int NumOfBlock = 4;
 
 	float m[NumOfBlock][NumOfBlock];
-	float v[NumOfBlock][NumOfBlock];
 
 	float _count = 0;
 
@@ -497,8 +463,7 @@ float Segmentation(Image *image)
 			int y = 14 + j * 20;
 
 			m[i][j] = GetM(image, x, y);
-			v[i][j] = GetV(image, m[i][j], x, y);
-			// printf("M[%d][%d]: %f\n\n", i, j, m[i][j]);
+
 			if( m[i][j] > 195 || m[i][j] < 65){
 				_count+=1.5;
 			}
@@ -508,34 +473,29 @@ float Segmentation(Image *image)
 			}
 			else if (m[i][j] > 170 || m[i][j] < 105)
 			{
-				_count+=0.35;
+				_count+=0.5;
 			}
 		}
 	}
-	return (_count > 4.5);
+	return (_count > 3);
+
 
 	float G_m = 0;
-	float V_m = 0;
 	float G_f = 0;
-	float V_f = 0;
 	int countG_f = 0;
-	int countV_f = 0;
 	float G_b = 0;
-	float V_b = 0;
 	int countG_b = 0;
-	int countV_b = 0;
 
 	for (int i = 0; i < NumOfBlock; i++)
 	{
 		for (int j = 0; j < NumOfBlock; j++)
 		{
 			G_m += m[i][j];
-			V_m += v[i][j];
+			// V_m += v[i][j];
 		}
 	}
 
 	G_m = G_m / (NumOfBlock * NumOfBlock);
-	V_m = V_m / (NumOfBlock * NumOfBlock);
 
 	for (int i = 0; i < NumOfBlock; i++)
 	{
@@ -552,40 +512,25 @@ float Segmentation(Image *image)
 				countG_f++;
 			}
 
-			if (v[i][j] < V_m)
-			{
-				V_b += v[i][j];
-				countV_b++;
-			}
-			else if (v[i][j] > V_m)
-			{
-				V_f += v[i][j];
-				countV_f++;
-			}
 		}
 	}
 
 	G_b = G_b / countG_b;
 	G_f = G_f / countG_f;
-	V_b = V_b / countV_b;
-	V_f = V_f / countV_f;
 
-	int threshold = 3;
+	int threshold = 4;
 	int count = 0;
-	// printf("G_m: %f\nV_m: %f\nG_b: %f\nV_b: %f\n\n",G_m,V_m,G_b,V_b);
 	for (int i = 0; i < NumOfBlock; i++)
 	{
 		for (int j = 0; j < NumOfBlock; j++)
 		{
-			if ((m[i][j] < G_b || m[i][j] > G_f))
+			if ((m[i][j] < (G_b - 10) || m[i][j] > (G_f + 15)))
 			{
 				count++;
-				// printf("M[%d][%d]: %f\nV[%d][%d]: %f\n\n",i,j,m[i][j],i,j,v[i][j]);
 			}
 		}
 	}
 
-	return count;
 
 	if (count >= threshold)
 	{
@@ -600,24 +545,24 @@ VOID ToNornal(
 	UINT16 V)
 {
 	//-------------------------------------------------------
-
-	// float m = GetM(image);
-	// float v = GetV(image, m);
-	// for(int i=0;i<width;i++)
-	// {
-	// 	for(int j=0;j<height;j++)
-	// 	{
-	// 		UINT8 tempData = image->data[i][j];
-	// 		if(tempData>m)
-	// 		{
-	// 			image->data[i][j] = (UINT32)(M + sqrt((tempData-m)*(tempData-m)*V/v));
-	// 		}
-	// 		else
-	// 		{
-	// 			image->data[i][j] = (UINT32)(M - sqrt((tempData-m)*(tempData-m)*V/v));
-	// 		}
-	// 	}
-	// }
+	//    OLD ALGORITHM
+	/*float m = GetM(image);
+	float v = GetV(image, m);
+	for(int i=0;i<width;i++)
+	{
+		for(int j=0;j<height;j++)
+		{
+			UINT8 tempData = image->data[i][j];
+			if(tempData>m)
+			{
+				image->data[i][j] = (UINT32)(M + sqrt((tempData-m)*(tempData-m)*V/v));
+			}
+			else
+			{
+				image->data[i][j] = (UINT32)(M - sqrt((tempData-m)*(tempData-m)*V/v));
+			}
+		}
+	}*/
 	//------------------------------------
 	Image tempImage;
 	tempImage.Height = image->Height;
@@ -933,89 +878,6 @@ VOID MakeBone(Image *image)
 	}
 }
 
-// BOOLEAN IsBoder(Image *image, int x, int y, UINT8 isDeleable[][MaxHeight])
-// {
-// 	int p1 = (isDeleable[x-1][y-1]) ? 255 : image->data[x-1][y-1];
-// 	int p2 = (isDeleable[x  ][y-1]) ? 255 : image->data[x  ][y-1];
-// 	int p3 = (isDeleable[x+1][y-1]) ? 255 : image->data[x+1][y-1];
-// 	int p4 = (isDeleable[x-1][y  ]) ? 255 : image->data[x-1][y  ];
-// 	int p5 = (isDeleable[x+1][y  ]) ? 255 : image->data[x+1][y  ];
-// 	int p6 = (isDeleable[x-1][y+1]) ? 255 : image->data[x-1][y+1];
-// 	int p7 = (isDeleable[x  ][y+1]) ? 255 : image->data[x  ][y+1];
-// 	int p8 = (isDeleable[x+1][y+1]) ? 255 : image->data[x+1][y+1];
-
-// 	int p = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8;
-
-// 	if((p>= 255*3 && p<=255*6)&&(image->data[x][y]==0)&&
-// 		((image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x-1][y]==255)
-// 		&&(image->data[x][y+1]==255||image->data[x-1][y]==255||image->data[x][y-1]==255))
-// 		)
-// 		// ||(image->data[x+1][y]==255||image->data[x][y+1]==255||image->data[x][y-1]==255)
-// 		// &&(image->data[x+1][y]==255||image->data[x-1][y]==255||image->data[x][y-1]==255)
-// 		return true;
-// 	return false;
-// }
-// BOOLEAN IsDeleable(Image *image, int x,int y)
-// {
-// 	// if((image->data[x-1][y]==255||image->data[x+1][y]==255||image->data[x][y-1]==255||image->data[x][y+1]==255)&&image->data[x][y]==0){
-// 	int p1 = image->data[x-1][y-1];
-// 	int p2 = image->data[x  ][y-1];
-// 	int p3 = image->data[x+1][y-1];
-// 	int p4 = image->data[x-1][y  ];
-// 	int p5 = image->data[x+1][y  ];
-// 	int p6 = image->data[x-1][y+1];
-// 	int p7 = image->data[x  ][y+1];
-// 	int p8 = image->data[x+1][y+1];
-
-// 		if((p1+p2+p3)==0&&(p6*p7*p8)>0) return true;
-// 	if((p1+p2+p4)==0&&(p5*p7*p8)>0) return true;
-// 		if((p1+p4+p6)==0&&(p3*p5*p8)>0) return true;
-// 	if((p3+p2+p5)==0&&(p4*p7*p6)>0) return true;
-// 		if((p6+p7+p8)==0&&(p1*p2*p3)>0) return true;
-// 	if((p8+p5+p7)==0&&(p2*p4*p1)>0) return true;
-// 		if((p3+p5+p8)==0&&(p1*p4*p6)>0) return true;
-// 	if((p6+p4+p7)==0&&(p2*p5*p3)>0) return true;
-
-// 	return false;
-// 	// }
-// }
-// VOID MakeBone(Image *image)
-// {
-// 	BOOLEAN isBone = false;
-// 	while(!isBone)
-// 	// for(int count = 0; count < 20; count++)
-// 	{
-// 	UINT8 temp[MaxHeight][MaxWidth];
-// 	ZeroMem(temp,sizeof(temp));
-// 		isBone = true;
-// 		for(int j=1;j<height-1;j++)
-// 		{
-// 			for(int i=1;i<width-1;i++)
-// 			{
-// 				if(IsBoder(image, i, j, temp))
-// 				{
-// 					if(IsDeleable(image, i, j))
-// 					{
-// 						temp[i][j]=1;
-// 						isBone = false;
-// 					}
-// 				}
-// 			}
-// 		}
-
-// 		for(int j=1;j<height-1;j++)
-// 		{
-// 			for(int i=1;i<width-1;i++)
-// 			{
-// 				if(temp[i][j])
-// 				{
-// 					image->data[i][j] = 255;
-// 				}
-// 			}
-// 		}
-// 	}
-
-// }
 VOID ClearBone(Image *image)
 {
 	for (int y = 1; y < height - 1; y++)
@@ -1117,6 +979,30 @@ VOID GetMinutiae(
 		for (int j = i + 1; j < minus->Count; j++)
 		{
 			UINT32 Distance = (UINT32)(sqrt(pow(minus->minus[i].x - minus->minus[j].x, 2) + pow(minus->minus[i].y - minus->minus[j].y, 2)));
+			if (Distance <= 3 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1)
+			{
+				// minus1.RemoveAt(j);
+				for (int b = j; b < minus->Count; b++) // dich chuyen mang
+				{
+					minus->minus[b] = minus->minus[b + 1];
+				}
+				minus->Count--;
+				// minus1.RemoveAt(i);
+				for (int a = i; a < minus->Count; a++) // dich chuyen mang
+				{
+					minus->minus[a] = minus->minus[a + 1];
+				}
+				minus->Count--;
+				i--;
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < minus->Count - 1; i++)
+	{
+		for (int j = i + 1; j < minus->Count; j++)
+		{
+			UINT32 Distance = (UINT32)(sqrt(pow(minus->minus[i].x - minus->minus[j].x, 2) + pow(minus->minus[i].y - minus->minus[j].y, 2)));
 			if (Distance <= 3)
 			{
 				// minus1.RemoveAt(j);
@@ -1131,19 +1017,8 @@ VOID GetMinutiae(
 					minus->minus[a] = minus->minus[a + 1];
 				}
 				minus->Count--;
-				if (i > 0)
-				{
-
-					j = j - 2;
-					i--;
-					break;
-				}
-				else
-				{
-					if (j > 1)
-						j--;
-					break;
-				}
+				i--;
+				break;
 			}
 			else if ((Distance > 3 && Distance < 6 && minus->minus[i].Type == minus->minus[j].Type && minus->minus[j].Type == 1))
 			{
@@ -1173,37 +1048,35 @@ VOID GetMinutiae(
 					break;
 				}
 			}
-			else if ((Distance > 3 && Distance < 6 && minus->minus[i].Type != minus->minus[j].Type) || (Distance > 3 && Distance < 6 && minus->minus[i].Type == minus->minus[j].Type))
+			else if ((Distance > 3 && Distance < 6 && minus->minus[i].Type != minus->minus[j].Type) || (Distance > 3 && Distance < 8 && minus->minus[i].Type == minus->minus[j].Type))
 			{
 
 				// minus1.RemoveAt(j);
-				for (int b = j; b < minus->Count; b++) // dich chuyen mang
-				{
-					minus->minus[b] = minus->minus[b + 1];
-				}
-				minus->Count--;
+				// for (int b = j; b < minus->Count; b++) // dich chuyen mang
+				// {
+				// 	minus->minus[b] = minus->minus[b + 1];
+				// }
+				// minus->Count--;
 				// minus1.RemoveAt(i);
-				//  for(int a = i; a < minus->Count ; a++)//dich chuyen mang
-				//  {
-				//  	minus->minus[a] = minus->minus[a+1];
-				//  }
-				//  minus->Count--;
-				if (i > 0)
-				{
-
-					j = j - 2;
-					i--;
-					break;
-				}
-				else
-				{
-					if (j > 1)
-						j--;
-					break;
-				}
+				// minus->minus[j].x = (minus->minus[j].x + minus->minus[i].x)/2;
+				// minus->minus[j].y = (minus->minus[j].y + minus->minus[i].y)/2;
+				// minus->minus[j].direct = image->direct[minus->minus[j].x][minus->minus[j].y];
+				// if(minus->minus[j].Type == 2 || minus->minus[i].Type == 2){
+				// 	minus->minus[j].Type = 2;
+				// }else{
+				// 	minus->minus[j].Type = 1;
+				// }
+				 for(int a = i; a < minus->Count ; a++)//dich chuyen mang
+				 {
+				 	minus->minus[a] = minus->minus[a+1];
+				 }
+				 minus->Count--;
+				i--;
+				break;
 			}
 		}
 	}
+
 }
 //---------------------------------------------------------------
 UINT64 factorial(UINT64 num)
